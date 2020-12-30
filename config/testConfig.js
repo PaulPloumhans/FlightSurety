@@ -21,11 +21,10 @@ var Config = async function(accounts) {
 
 
     let owner = accounts[0];
-    let firstAirline = accounts[1];
+    let firstAirline = accounts[1]; // in line with migration file "2_deploy_contracts.js"
 
     let flightSuretyData = await FlightSuretyData.new();
-    let flightSuretyApp = await FlightSuretyApp.new();
-
+    let flightSuretyApp = await FlightSuretyApp.new(flightSuretyData.address, firstAirline);
     
     return {
         owner: owner,
