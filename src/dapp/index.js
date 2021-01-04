@@ -3,9 +3,46 @@ import DOM from './dom';
 import Contract from './contract';
 import './flightsurety.css';
 
+// Dapp overall status info
+const htmlCurrentUser = document.getElementById('currentUser');
 
-(async() => {
+const isMetaMaskInstalled = () => {
+    const { ethereum } = window
+    return Boolean(ethereum && ethereum.isMetaMask)
+}
 
+const initialize = async() => {
+
+    // ************************** SETUP METAMASK AND GET USER ACCOUNT ********************
+
+    // check that metamask is installed
+    if(!isMetaMaskInstalled())
+        window.alert('Metamask is not installed. Please install Metamask to use this site');
+    else
+        console.log('Metamask installed : ', isMetaMaskInstalled());
+
+    // get accounts (should be an array of length 1, with accounts[0] the current account)
+    let accounts;
+    try {
+        accounts = await ethereum.request({
+            method: 'eth_requestAccounts',
+        });
+    } catch (error) {
+        console.error(error)
+    }
+    // output current user
+    htmlCurrentUser.innerHTML = 'Current user: ' + accounts[0];
+
+    // handle event that informs of account change
+    ethereum.on('accountsChanged', (acc) => {
+        window.alert('Change to account ' + acc[0]);
+        accounts = acc;
+        htmlCurrentUser.innerHTML = 'Current user: ' + accounts[0];
+    });
+
+    
+    
+    
     let result = null;
 
     let contract = new Contract('localhost', () => {
@@ -13,13 +50,13 @@ import './flightsurety.css';
         // display current user
         // initially user = contract deployer
         contract.web3.eth.getAccounts((error,accts) => {
-            document.getElementById('current-user').innerHTML = 'Current user: ' + accts[0];
+            //document.getElementById('current-user').innerHTML = 'Current user: ' + accts[0];
         });
         // update current user
         var subscription = contract.web3.eth.subscribe('accountsChanged', function(error, result){
             console.log('account changed');
             contract.web3.eth.getAccounts((err,accounts) => {
-                document.getElementById('current-user').innerHTML = 'Current user: ' + accounts[0];
+                //document.getElementById('current-user').innerHTML = 'Current user: ' + accounts[0];
                 console.log('accounts: ' + accounts);
             });
             if (!error)
@@ -53,7 +90,9 @@ import './flightsurety.css';
     });
     
 
-})();
+}
+
+
 
 
 function display(title, description, results) {
@@ -71,7 +110,7 @@ function display(title, description, results) {
 
 }
 
-
+window.addEventListener('DOMContentLoaded', initialize);
 
 
 
