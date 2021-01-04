@@ -2,18 +2,28 @@ body {
     background-image: url('flight.jpg'); /* Source: iStockPhoto */
     background-repeat: no-repeat;
     background-size: cover;
+    /* add this for the boostrap nav-bar */
+    padding-top: 60px;     
 }
 
-.container {
-    margin-top: 400px;
-    background-color: #000;
-    opacity: 0.9;
+.container { 
+    background-color: rgb(17, 17, 17);
+    opacity: 0.8;
     color: #fff;
     padding: 40px;
 }
 
+
 .top-20 {
     margin-top: 20px;
+}
+
+.top-100 {
+    margin-top: 100px;
+}
+
+.left-20 {
+    margin-left: 20px;
 }
 
 h5 {

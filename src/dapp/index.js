@@ -10,6 +10,30 @@ import './flightsurety.css';
 
     let contract = new Contract('localhost', () => {
 
+        // display current user
+        // initially user = contract deployer
+        contract.web3.eth.getAccounts((error,accts) => {
+            document.getElementById('current-user').innerHTML = 'Current user: ' + accts[0];
+        });
+        // update current user
+        var subscription = contract.web3.eth.subscribe('accountsChanged', function(error, result){
+            console.log('account changed');
+            contract.web3.eth.getAccounts((err,accounts) => {
+                document.getElementById('current-user').innerHTML = 'Current user: ' + accounts[0];
+                console.log('accounts: ' + accounts);
+            });
+            if (!error)
+                console.log(result);
+        });
+
+        /* window.ethereum.on('accountsChanged', () => {
+            contract.web3.eth.getAccounts((error,accounts) => {
+                document.getElementById('current-user').innerHTML = 'Current user: ' + accounts[0];
+                console.log('accounts: ' + accounts);
+            });
+        }); */
+        
+
         // Read transaction
         contract.isOperational((error, result) => {
             console.log(error,result);
@@ -24,7 +48,7 @@ import './flightsurety.css';
             contract.fetchFlightStatus(flight, (error, result) => {
                 display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: error, value: result.flight + ' ' + result.timestamp} ]);
             });
-        })
+        });
     
     });
     

@@ -27,6 +27,7 @@
     "babel": "^6.23.0",
     "babel-loader": "^8.2.2",
     "babel-polyfill": "^6.26.0",
+    "bootstrap-icons": "^1.2.2",
     "cipher-base": "^1.0.4",
     "css-loader": "^5.0.1",
     "file-loader": "^6.2.0",
