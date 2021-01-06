@@ -18,6 +18,7 @@ contract FlightSuretyApp {
     /*                                       DATA VARIABLES                                     */
     /********************************************************************************************/
 
+
     // Flight status codees
     uint8 private constant STATUS_CODE_UNKNOWN = 0;
     uint8 private constant STATUS_CODE_ON_TIME = 10;
@@ -25,8 +26,6 @@ contract FlightSuretyApp {
     uint8 private constant STATUS_CODE_LATE_WEATHER = 30;
     uint8 private constant STATUS_CODE_LATE_TECHNICAL = 40;
     uint8 private constant STATUS_CODE_LATE_OTHER = 50;
-
-    address private contractOwner;          // Account used to deploy contract
 
     struct Flight {
         bool isRegistered;
@@ -36,20 +35,38 @@ contract FlightSuretyApp {
     }
     mapping(bytes32 => Flight) private flights;
 
+    address private contractOwner;          // Account used to deploy contract
+
     /* ******************************* Management of airlines ************************************/
+
+    // Airline satus codes
+    uint8 private constant UNREGISTERED = 0; // this must be 0
+    uint8 private constant IN_REGISTRATION = 10;
+    uint8 private constant REGISTERED = 20;
+    uint8 private constant FUNDED = 30;
+
+    struct Airline {
+        uint8 status;
+        uint256 votes;
+    }
+    // map of all airlines
+    mapping(address => Airline) private mapAirlines;
+    // list of all airlines
+    address[] private airlines = new address[](0); 
 
     // max number of airlines below which 50% multiparty consensus is required
     uint8 private constant MAX_AIRLINES_SINGLEPARTY_CONSENSUS = 4;
-    // list of addresses of registered airlines
-    address[] private registeredAirlines = new address[](0); 
-    // mapping of registered airlines
-    mapping(address => bool) private mapRegisteredAirlines;
-    // queue of airlines in the process of being registered
-    mapping(address => address[]) private queueAirlines;
-    // list of funded airlines
-    address[] private fundedAirlines = new address[](0); 
-    // mapping of funded airlines
-    mapping(address => bool) private mapFundedAirlines;
+    // number of airlines to which 50% threshold applies (=number of airlines that are in either
+    // REGISTERED or FUNDED state)
+    uint256 private numAirlinesConsensus;
+    // number of funded arilines
+
+
+    // mapping of airlines in the process of being registered
+    mapping(address => address[]) private mapQueueAirlines;
+
+    
+    
 
     /* ******************************* Management of contract ************************************/
     bool private operational = true;
@@ -64,25 +81,25 @@ contract FlightSuretyApp {
     /// @dev Modifier that requires the "operational" boolean variable to be "true"
     modifier requireIsOperational(){
          // Modify to call data contract's status
-        require(operational, "Contract is currently not operational");  
+        require(operational, "Contract FlightSuretyApp is currently not operational");  
         _;  // All modifiers require an "_" which indicates where the function body will be added
     }
 
     /// @dev Modifier that requires the "ContractOwner" account to be the function caller
     modifier requireContractOwner(){
-        require(msg.sender == contractOwner, "Caller is not contract owner");
+        require(msg.sender == contractOwner, "Caller of FlightSuretyApp is not contract owner");
         _;
     }
 
     /// @dev Modifier that requires the caller to be a registered airline
     modifier requireRegisteredAirline(){
-        require(mapRegisteredAirlines[msg.sender], "Caller is not a registered airline");
+        require(mapAirlines[msg.sender].status == REGISTERED, "Caller of FlightSuretyApp is not a registered airline");
         _;
     }
 
     /// @dev Modifier that requires the caller to be a funded airline
     modifier requireFundedAirline(){
-        require(mapFundedAirlines[msg.sender], "Caller is not a funded airline");
+        require(mapAirlines[msg.sender].status == FUNDED, "Caller of FlightSuretyApp is not a funded airline");
         _;
     }
 // endregion
@@ -98,8 +115,10 @@ contract FlightSuretyApp {
         contractOwner = msg.sender;
         // initialize data contract
         flightSuretyData = FlightSuretyData(dataContractAddress);  
-        // register contract owner as first airine
+        // register contract owner as first airline
         _registerAirline(firstAirline);
+        // record first airline in list of airlines
+        airlines.push(firstAirline);
     }
 
     /********************************************************************************************/
@@ -143,6 +162,13 @@ contract FlightSuretyApp {
     /********************************************************************************************/
 
     /**
+    * @dev look at current airlines in mapAirlines to see which ones are able to vote, i.e. have status
+    *      REGISTERED or FUNDED
+    * @return the number of airlines that are 
+    */
+
+
+    /**
     * @notice Attempts to register and airline. For the first MAX_AIRLINES_SINGLEPARTY_CONSENSUS
     * airlines this is a simple request from a funded airline. After that it becomes a multiparty
     * consensus where a number of funded airlines at least equal to 50% of the number of registered
@@ -156,36 +182,45 @@ contract FlightSuretyApp {
         requireIsOperational
         requireFundedAirline                            
         returns(bool success, uint256 votes)
-    {        
-        // check that airline is not already registered
-        require(mapRegisteredAirlines[airline] == false);
-
+    {                
+        // if this is the first attempt to register the airline, record it and initialize status
+        if(mapAirlines[airline].status == UNREGISTERED){
+            mapAirlines[airline] = Airline({ status: UNREGISTERED, votes : 0 });
+            airlines.push(airline);        
+        }
+        
         // decide whether to use multiparty consensus or not
-        if(registeredAirlines.length < MAX_AIRLINES_SINGLEPARTY_CONSENSUS){
-            votes = 1;
+        if(numAirlinesConsensus < MAX_AIRLINES_SINGLEPARTY_CONSENSUS){            
             success = _registerAirline(airline);
+            mapAirlines[airline].status = REGISTERED;
         }else{
-            uint256 currentVotes = queueAirlines[airline].length;
+            uint256 currentVotes = mapQueueAirlines[airline].length;
             if(currentVotes == 0){
-                queueAirlines[airline] = new address[](0);
-                queueAirlines[airline].push(msg.sender);
+                mapQueueAirlines[airline] = new address[](0);
+                mapQueueAirlines[airline].push(msg.sender);
                 success = false;
                 votes = 1;
+                mapAirlines[airline].status = IN_REGISTRATION;
+                mapAirlines[airline].votes = votes;
             }else{
                 // loop on current votes to make sure there is no double voting by the same airline
                 uint256 c = 0;
                 for(; c < currentVotes; c++){
-                    if(queueAirlines[airline][c] == msg.sender) // double voting by msg.sender
+                    if(mapQueueAirlines[airline][c] == msg.sender) // double voting by msg.sender
                         break;
                 }
                 if(c == currentVotes) // no double voting by msg.sender
-                    queueAirlines[airline].push(msg.sender); // add vote
+                    mapQueueAirlines[airline].push(msg.sender); // add vote
                 // update votes
-                votes = queueAirlines[airline].length;
-                if(votes.mul(2) >= registeredAirlines.length)
+                votes = mapQueueAirlines[airline].length;
+                if(votes.mul(2) >= numAirlinesConsensus){
                     success = _registerAirline(airline);
-                else
+                    mapAirlines[airline].status = REGISTERED;
+                    mapAirlines[airline].votes = votes;
+                }else{
                     success = false;
+                    mapAirlines[airline].votes = votes;
+                }
             }
         }
         return (success, votes);
@@ -216,21 +251,26 @@ contract FlightSuretyApp {
         requireIsOperational  
         returns(bool success)                         
     {
-        // check that airline is not already registered
-        require(mapRegisteredAirlines[airline] == false);
+        // check the airline status
+        require(mapAirlines[airline].status == UNREGISTERED || mapAirlines[airline].status == IN_REGISTRATION);
         // mark airline as registered
-        mapRegisteredAirlines[airline] = true;
-        // add airine to list of registed airlines
-        registeredAirlines.push(airline);
-        // just in case, make sure entry in queueAirlines is empty
-        if(queueAirlines[airline].length != 0)
-            delete queueAirlines[airline];
+        mapAirlines[airline].status = REGISTERED;
+        // increment number of airlines used to decided whether to switch to multiparty consensus or not
+        numAirlinesConsensus++;
+        // just in case, make sure entry in mapQueueAirlines is empty
+        if(mapQueueAirlines[airline].length != 0)
+            delete mapQueueAirlines[airline];
         return true;
+    }
+
+    /// @dev Check if an airline is in the registration process
+    function isInRegistrationAirline(address airline) external view returns(bool) {
+        return  mapAirlines[airline].status == IN_REGISTRATION;
     }
 
     /// @dev Check if an airline is registered
     function isRegisteredAirline(address airline) external view returns(bool) {
-        return mapRegisteredAirlines[airline];
+        return mapAirlines[airline].status == REGISTERED;
     }
 
     /// @dev allow a registered airline to fund itself
@@ -241,9 +281,8 @@ contract FlightSuretyApp {
         requireRegisteredAirline
     {
         require(msg.value == 10 ether);
-        // make sure an airline can only be funded once
-        require(mapFundedAirlines[msg.sender] == false);
-        mapFundedAirlines[msg.sender] = true;
+        // update airline status
+        mapAirlines[msg.sender].status = FUNDED;
 
         // forward funds to data contract
         flightSuretyData.fund{value:msg.value}(msg.sender);
@@ -251,7 +290,17 @@ contract FlightSuretyApp {
 
     /// @dev Check if an airline is funded
     function isFundedAirline(address airline) external view returns(bool) {
-        return mapFundedAirlines[airline];
+        return mapAirlines[airline].status == FUNDED;
+    }
+
+    /// @dev Return all airlines that have at keast attempted to register
+    function getAirlines() external view returns(address[] memory) {
+        return airlines;
+    }
+
+    /// @dev Return an airline status
+    function getAirlineStatus(address airline) external view returns(uint8) {
+        return mapAirlines[airline].status;
     }
 
     /// @dev Register a future flight for insuring.

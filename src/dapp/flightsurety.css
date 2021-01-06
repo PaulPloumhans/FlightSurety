@@ -13,6 +13,9 @@ body {
     padding: 40px;
 }
 
+.white-font {
+    color: #fff;
+}
 
 .top-20 {
     margin-top: 20px;
@@ -20,6 +23,10 @@ body {
 
 .top-100 {
     margin-top: 100px;
+}
+
+.bottom-20 {
+    margin-bottom: 20px;
 }
 
 .left-20 {

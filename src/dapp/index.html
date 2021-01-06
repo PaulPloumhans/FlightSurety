@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">  
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css" > -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="icon" type="image/x-icon" href="favicon.ico"/>
     <title>FlightSurety</title>
 </head>
 
@@ -59,16 +59,72 @@
     <main>
         <div class="row top-20">
             <div class="col-10 container" id="airlines">
-                <h1>Airlines</h1>                
-                <p>Airlines info goes here</p>
+                <h1>Airlines</h1>
+                    <h4>Match airline name with current user address (optional)</h4>
+                        <form>
+                            <div class="row top-20 bottom-20">
+                                <div class="col-3">
+                                    Assign airline name to current address (optional)
+                                </div>
+                                <div class="col-4">
+                                    <select class="form-control" id="airlinesNamesMenu"></select>                            
+                                </div>
+                                <div class="col-3">
+                                    <button type="button" class="btn btn-primary" id="btnAirlineAssignName">Assign</button>
+                                </div>                                              
+                            </div>
+                        </form>
+                    <h4>Overview of airlines status</h4>
+                        <button type="button" class="btn btn-primary" id="btnAirlineStatusRefresh">Refresh status</button>
+                        <table class="table white-font">
+                            <thead>
+                              <tr>
+                                <th scope="col">Address</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">IATA</th>
+                                <th scope="col">Status</th>
+                              </tr>
+                            </thead>
+                            <tbody id="tableAirlinesStatus"></tbody>
+                        </table>
+                    <h4>Register an airline</h4>
+                        <form>
+                            <div class="row top-20 bottom-20">
+                                <div class="col-3">
+                                    Enter address of airline to register
+                                </div>
+                                <div class="col-4">
+                                    <input type="text" class="form-control" placeholder="Enter airline address" id="airlineAddressToRegister"></select>                            
+                                </div>
+                                <div class="col-3">
+                                    <button type="button" class="btn btn-primary" id="btnAirlineRegister">Register</button>
+                                </div>                                              
+                            </div>
+                        </form>
+                    <h4>Fund an airline</h4>
+                        <form>
+                            <div class="row top-20 bottom-20">
+                                <div class="col-3">
+                                    Enter amount of funding for current user (in ETH)
+                                </div>
+                                <div class="col-4">
+                                    <input type="number" class="form-control" placeholder="10" id="airlineAmountToFund"></select>                            
+                                </div>
+                                <div class="col-3">
+                                    <button type="button" class="btn btn-primary" id="btnAirlineFund">Fund</button>
+                                </div>                                              
+                            </div>
+                        </form>
             </div>
         </div>
+
         <div class="row top-20">
             <div class="col-10 container" id="passengers">
                 <h1>Passengers</h1>
-                <p>Passegers info goes here</p>
+                <p>Passengers info goes here</p>
             </div>
         </div>
+
         <div class="row top-20" >
             <div class="col-10 container" id="display-wrapper">
                 <h1>Old stuff</h1>

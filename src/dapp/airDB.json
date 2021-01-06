@@ -1,0 +1,2335 @@
+{
+	"airlinesDB": [
+		{
+			"iata": "TP",
+			"name": "TAP Air Portugal"
+		},
+		{
+			"iata": "AT",
+			"name": "Royal Air Maroc"
+		},
+		{
+			"iata": "SN",
+			"name": "Brussels Airlines"
+		},
+		{
+			"iata": "HU",
+			"name": "Hainan Airlines"
+		},
+		{
+			"iata": "AC",
+			"name": "Air Canada"
+		},
+		{
+			"iata": "UA",
+			"name": "United Airlines"
+		},
+		{
+			"iata": "ET",
+			"name": "Ethiopian Airlines"
+		},
+		{
+			"iata": "LH",
+			"name": "Lufthansa"
+		},
+		{
+			"iata": "LX",
+			"name": "SWISS"
+		},
+		{
+			"iata": "CZ",
+			"name": "China Southern Airlines"
+		}
+	],
+	"flightsDB": [
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Cairo International Airport",
+				"iata": "CAI",
+				"scheduled": "2020-12-31T09:45:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:35:00+00:00"
+			},
+			"airline": {
+				"name": "TAP Air Portugal",
+				"iata": "TP"
+			},
+			"flight": {
+				"number": "6996",
+				"iata": "TP6996"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Mohamed V",
+				"iata": "CMN",
+				"scheduled": "2020-12-31T12:40:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T16:05:00+00:00"
+			},
+			"airline": {
+				"name": "Royal Air Maroc",
+				"iata": "AT"
+			},
+			"flight": {
+				"number": "832",
+				"iata": "AT832"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Marco Polo",
+				"iata": "VCE",
+				"scheduled": "2020-12-31T11:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:35:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "3202",
+				"iata": "SN3202"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Marco Polo",
+				"iata": "VCE",
+				"scheduled": "2020-12-31T11:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:35:00+00:00"
+			},
+			"airline": {
+				"name": "Hainan Airlines",
+				"iata": "HU"
+			},
+			"flight": {
+				"number": "8572",
+				"iata": "HU8572"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Frankfurt International Airport",
+				"iata": "FRA",
+				"scheduled": "2020-12-31T12:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:50:00+00:00"
+			},
+			"airline": {
+				"name": "Air Canada",
+				"iata": "AC"
+			},
+			"flight": {
+				"number": "9320",
+				"iata": "AC9320"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Blagnac",
+				"iata": "TLS",
+				"scheduled": "2020-12-31T11:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:30:00+00:00"
+			},
+			"airline": {
+				"name": "Hainan Airlines",
+				"iata": "HU"
+			},
+			"flight": {
+				"number": "8561",
+				"iata": "HU8561"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Heathrow",
+				"iata": "LHR",
+				"scheduled": "2020-12-31T11:05:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:10:00+00:00"
+			},
+			"airline": {
+				"name": "Air Canada",
+				"iata": "AC"
+			},
+			"flight": {
+				"number": "6336",
+				"iata": "AC6336"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Entebbe",
+				"iata": "EBB",
+				"scheduled": "2020-12-31T01:30:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T07:55:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "460",
+				"iata": "SN460"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Entebbe",
+				"iata": "EBB",
+				"scheduled": "2020-12-31T01:30:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T07:55:00+00:00"
+			},
+			"airline": {
+				"name": "United Airlines",
+				"iata": "UA"
+			},
+			"flight": {
+				"number": "9927",
+				"iata": "UA9927"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Entebbe",
+				"iata": "EBB",
+				"scheduled": "2020-12-31T01:30:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T07:55:00+00:00"
+			},
+			"airline": {
+				"name": "Air Canada",
+				"iata": "AC"
+			},
+			"flight": {
+				"number": "6351",
+				"iata": "AC6351"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Bole International",
+				"iata": "ADD",
+				"scheduled": "2020-12-31T01:00:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T06:15:00+00:00"
+			},
+			"airline": {
+				"name": "Ethiopian Airlines",
+				"iata": "ET"
+			},
+			"flight": {
+				"number": "728",
+				"iata": "ET728"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Bole International",
+				"iata": "ADD",
+				"scheduled": "2020-12-31T00:30:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T07:00:00+00:00"
+			},
+			"airline": {
+				"name": "Ethiopian Airlines",
+				"iata": "ET"
+			},
+			"flight": {
+				"number": "3712",
+				"iata": "ET3712"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Frankfurt International Airport",
+				"iata": "FRA",
+				"scheduled": "2020-12-31T12:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:50:00+00:00"
+			},
+			"airline": {
+				"name": "United Airlines",
+				"iata": "UA"
+			},
+			"flight": {
+				"number": "9354",
+				"iata": "UA9354"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Frankfurt International Airport",
+				"iata": "FRA",
+				"scheduled": "2020-12-31T12:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:50:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "7004",
+				"iata": "SN7004"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Frankfurt International Airport",
+				"iata": "FRA",
+				"scheduled": "2020-12-31T12:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:50:00+00:00"
+			},
+			"airline": {
+				"name": "Ethiopian Airlines",
+				"iata": "ET"
+			},
+			"flight": {
+				"number": "1559",
+				"iata": "ET1559"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Heathrow",
+				"iata": "LHR",
+				"scheduled": "2020-12-31T11:05:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:10:00+00:00"
+			},
+			"airline": {
+				"name": "Lufthansa",
+				"iata": "LH"
+			},
+			"flight": {
+				"number": "5595",
+				"iata": "LH5595"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Heathrow",
+				"iata": "LHR",
+				"scheduled": "2020-12-31T11:05:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:10:00+00:00"
+			},
+			"airline": {
+				"name": "Hainan Airlines",
+				"iata": "HU"
+			},
+			"flight": {
+				"number": "8540",
+				"iata": "HU8540"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Boukhalef",
+				"iata": "TNG",
+				"scheduled": "2020-12-31T10:00:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T12:50:00+00:00"
+			},
+			"airline": {
+				"name": "Royal Air Maroc",
+				"iata": "AT"
+			},
+			"flight": {
+				"number": "830",
+				"iata": "AT830"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Milano Malpensa",
+				"iata": "MXP",
+				"scheduled": "2020-12-31T11:55:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:30:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "3158",
+				"iata": "SN3158"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Milano Malpensa",
+				"iata": "MXP",
+				"scheduled": "2020-12-31T11:55:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:30:00+00:00"
+			},
+			"airline": {
+				"name": "Hainan Airlines",
+				"iata": "HU"
+			},
+			"flight": {
+				"number": "8048",
+				"iata": "HU8048"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Geneve-cointrin",
+				"iata": "GVA",
+				"scheduled": "2020-12-31T11:25:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T12:40:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "2714",
+				"iata": "SN2714"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Geneve-cointrin",
+				"iata": "GVA",
+				"scheduled": "2020-12-31T11:25:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T12:40:00+00:00"
+			},
+			"airline": {
+				"name": "SWISS",
+				"iata": "LX"
+			},
+			"flight": {
+				"number": "4554",
+				"iata": "LX4554"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Geneve-cointrin",
+				"iata": "GVA",
+				"scheduled": "2020-12-31T11:25:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T12:40:00+00:00"
+			},
+			"airline": {
+				"name": "Hainan Airlines",
+				"iata": "HU"
+			},
+			"flight": {
+				"number": "8566",
+				"iata": "HU8566"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Blagnac",
+				"iata": "TLS",
+				"scheduled": "2020-12-31T11:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:30:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "3668",
+				"iata": "SN3668"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Charles De Gaulle",
+				"iata": "CDG",
+				"scheduled": "2020-12-31T11:30:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T12:25:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "3634",
+				"iata": "SN3634"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Franz Josef Strauss",
+				"iata": "MUC",
+				"scheduled": "2020-12-31T11:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:10:00+00:00"
+			},
+			"airline": {
+				"name": "Lufthansa",
+				"iata": "LH"
+			},
+			"flight": {
+				"number": "2286",
+				"iata": "LH2286"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Franz Josef Strauss",
+				"iata": "MUC",
+				"scheduled": "2020-12-31T11:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:10:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "7054",
+				"iata": "SN7054"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Lisbon Portela",
+				"iata": "LIS",
+				"scheduled": "2020-12-31T10:45:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T14:35:00+00:00"
+			},
+			"airline": {
+				"name": "TAP Air Portugal",
+				"iata": "TP"
+			},
+			"flight": {
+				"number": "646",
+				"iata": "TP646"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Lisbon Portela",
+				"iata": "LIS",
+				"scheduled": "2020-12-31T10:45:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T14:35:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "6402",
+				"iata": "SN6402"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Lisbon Portela",
+				"iata": "LIS",
+				"scheduled": "2020-12-31T10:45:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T14:35:00+00:00"
+			},
+			"airline": {
+				"name": "Ethiopian Airlines",
+				"iata": "ET"
+			},
+			"flight": {
+				"number": "1892",
+				"iata": "ET1892"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Heathrow",
+				"iata": "LHR",
+				"scheduled": "2020-12-31T11:05:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:10:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "2094",
+				"iata": "SN2094"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Kastrup",
+				"iata": "CPH",
+				"scheduled": "2020-12-31T11:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:20:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "2258",
+				"iata": "SN2258"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "St-Exupéry",
+				"iata": "LYS",
+				"scheduled": "2020-12-31T11:45:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:05:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "3588",
+				"iata": "SN3588"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "St-Exupéry",
+				"iata": "LYS",
+				"scheduled": "2020-12-31T11:45:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:05:00+00:00"
+			},
+			"airline": {
+				"name": "Hainan Airlines",
+				"iata": "HU"
+			},
+			"flight": {
+				"number": "8588",
+				"iata": "HU8588"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Nador",
+				"iata": "NDR",
+				"scheduled": "2020-12-31T13:15:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T16:05:00+00:00"
+			},
+			"airline": {
+				"name": "Royal Air Maroc",
+				"iata": "AT"
+			},
+			"flight": {
+				"number": "834",
+				"iata": "AT834"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Mohamed V",
+				"iata": "CMN",
+				"scheduled": "2020-12-31T07:30:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T10:50:00+00:00"
+			},
+			"airline": {
+				"name": "Royal Air Maroc",
+				"iata": "AT"
+			},
+			"flight": {
+				"number": "353",
+				"iata": "AT353"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Cairo International Airport",
+				"iata": "CAI",
+				"scheduled": "2020-12-31T09:45:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:35:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "5602",
+				"iata": "SN5602"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Manchester Airport",
+				"iata": "MAN",
+				"scheduled": "2020-12-31T11:05:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:30:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "2174",
+				"iata": "SN2174"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Schiphol",
+				"iata": "AMS",
+				"scheduled": "2020-12-31T09:25:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T10:10:00+00:00"
+			},
+			"airline": {
+				"name": "China Southern Airlines",
+				"iata": "CZ"
+			},
+			"flight": {
+				"number": "7821",
+				"iata": "CZ7821"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Schiphol",
+				"iata": "AMS",
+				"scheduled": "2020-12-31T09:25:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T10:10:00+00:00"
+			},
+			"airline": {
+				"name": "China Southern Airlines",
+				"iata": "CZ"
+			},
+			"flight": {
+				"number": "515",
+				"iata": "CZ515"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Kuala Lumpur International Airport (klia)",
+				"iata": "KUL",
+				"scheduled": "2020-12-31T08:30:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T16:00:00+00:00"
+			},
+			"airline": {
+				"name": "Ethiopian Airlines",
+				"iata": "ET"
+			},
+			"flight": {
+				"number": "3639",
+				"iata": "ET3639"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Bole International",
+				"iata": "ADD",
+				"scheduled": "2020-12-31T02:00:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T08:30:00+00:00"
+			},
+			"airline": {
+				"name": "Ethiopian Airlines",
+				"iata": "ET"
+			},
+			"flight": {
+				"number": "3714",
+				"iata": "ET3714"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Frankfurt International Airport",
+				"iata": "FRA",
+				"scheduled": "2020-12-31T12:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:50:00+00:00"
+			},
+			"airline": {
+				"name": "Lufthansa",
+				"iata": "LH"
+			},
+			"flight": {
+				"number": "1012",
+				"iata": "LH1012"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Abu Dhabi International",
+				"iata": "AUH",
+				"scheduled": "2020-12-31T08:05:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T12:25:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "4102",
+				"iata": "SN4102"
+			}
+		},
+		{
+			"flight_date": "2020-12-30",
+			"departure": {
+				"airport": "Berlin-Schoenefeld",
+				"iata": "BER",
+				"scheduled": "2020-12-30T11:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-30T13:20:00+00:00"
+			},
+			"airline": {
+				"name": "Lufthansa",
+				"iata": "LH"
+			},
+			"flight": {
+				"number": "5564",
+				"iata": "LH5564"
+			}
+		},
+		{
+			"flight_date": "2020-12-30",
+			"departure": {
+				"airport": "Berlin-Schoenefeld",
+				"iata": "BER",
+				"scheduled": "2020-12-30T11:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-30T13:20:00+00:00"
+			},
+			"airline": {
+				"name": "TAP Air Portugal",
+				"iata": "TP"
+			},
+			"flight": {
+				"number": "7481",
+				"iata": "TP7481"
+			}
+		},
+		{
+			"flight_date": "2020-12-30",
+			"departure": {
+				"airport": "Schiphol",
+				"iata": "AMS",
+				"scheduled": "2020-12-30T09:25:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-30T10:10:00+00:00"
+			},
+			"airline": {
+				"name": "China Southern Airlines",
+				"iata": "CZ"
+			},
+			"flight": {
+				"number": "515",
+				"iata": "CZ515"
+			}
+		},
+		{
+			"flight_date": "2020-12-30",
+			"departure": {
+				"airport": "Schiphol",
+				"iata": "AMS",
+				"scheduled": "2020-12-30T09:25:00+00:00"
+			},
+			"arrival": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-30T10:10:00+00:00"
+			},
+			"airline": {
+				"name": "China Southern Airlines",
+				"iata": "CZ"
+			},
+			"flight": {
+				"number": "7821",
+				"iata": "CZ7821"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T14:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Kotoka",
+				"iata": "ACC",
+				"scheduled": "2020-12-31T20:35:00+00:00"
+			},
+			"airline": {
+				"name": "Air Canada",
+				"iata": "AC"
+			},
+			"flight": {
+				"number": "6338",
+				"iata": "AC6338"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T14:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Kotoka",
+				"iata": "ACC",
+				"scheduled": "2020-12-31T20:35:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "291",
+				"iata": "SN291"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T14:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Kotoka",
+				"iata": "ACC",
+				"scheduled": "2020-12-31T20:35:00+00:00"
+			},
+			"airline": {
+				"name": "United Airlines",
+				"iata": "UA"
+			},
+			"flight": {
+				"number": "9960",
+				"iata": "UA9960"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T07:00:00+00:00"
+			},
+			"arrival": {
+				"airport": "Manchester Airport",
+				"iata": "MAN",
+				"scheduled": "2020-12-31T07:20:00+00:00"
+			},
+			"airline": {
+				"name": "Ethiopian Airlines",
+				"iata": "ET"
+			},
+			"flight": {
+				"number": "728",
+				"iata": "ET728"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T15:25:00+00:00"
+			},
+			"arrival": {
+				"airport": "Lisbon Portela",
+				"iata": "LIS",
+				"scheduled": "2020-12-31T17:10:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "6405",
+				"iata": "SN6405"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T11:55:00+00:00"
+			},
+			"arrival": {
+				"airport": "Washington Dulles International",
+				"iata": "IAD",
+				"scheduled": "2020-12-31T14:35:00+00:00"
+			},
+			"airline": {
+				"name": "SWISS",
+				"iata": "LX"
+			},
+			"flight": {
+				"number": "3012",
+				"iata": "LX3012"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T07:00:00+00:00"
+			},
+			"arrival": {
+				"airport": "Frankfurt International Airport",
+				"iata": "FRA",
+				"scheduled": "2020-12-31T08:00:00+00:00"
+			},
+			"airline": {
+				"name": "United Airlines",
+				"iata": "UA"
+			},
+			"flight": {
+				"number": "9355",
+				"iata": "UA9355"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Manchester Airport",
+				"iata": "MAN",
+				"scheduled": "2020-12-31T10:15:00+00:00"
+			},
+			"airline": {
+				"name": "Air Canada",
+				"iata": "AC"
+			},
+			"flight": {
+				"number": "6378",
+				"iata": "AC6378"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:35:00+00:00"
+			},
+			"arrival": {
+				"airport": "St-Exupéry",
+				"iata": "LYS",
+				"scheduled": "2020-12-31T11:00:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "3587",
+				"iata": "SN3587"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:40:00+00:00"
+			},
+			"arrival": {
+				"airport": "Heathrow",
+				"iata": "LHR",
+				"scheduled": "2020-12-31T10:05:00+00:00"
+			},
+			"airline": {
+				"name": "Lufthansa",
+				"iata": "LH"
+			},
+			"flight": {
+				"number": "5594",
+				"iata": "LH5594"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T07:20:00+00:00"
+			},
+			"arrival": {
+				"airport": "Schiphol",
+				"iata": "AMS",
+				"scheduled": "2020-12-31T08:15:00+00:00"
+			},
+			"airline": {
+				"name": "China Southern Airlines",
+				"iata": "CZ"
+			},
+			"flight": {
+				"number": "516",
+				"iata": "CZ516"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T07:20:00+00:00"
+			},
+			"arrival": {
+				"airport": "Schiphol",
+				"iata": "AMS",
+				"scheduled": "2020-12-31T08:15:00+00:00"
+			},
+			"airline": {
+				"name": "China Southern Airlines",
+				"iata": "CZ"
+			},
+			"flight": {
+				"number": "7782",
+				"iata": "CZ7782"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T10:10:00+00:00"
+			},
+			"arrival": {
+				"airport": "Newark Liberty International",
+				"iata": "EWR",
+				"scheduled": "2020-12-31T12:25:00+00:00"
+			},
+			"airline": {
+				"name": "United Airlines",
+				"iata": "UA"
+			},
+			"flight": {
+				"number": "998",
+				"iata": "UA998"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T10:40:00+00:00"
+			},
+			"arrival": {
+				"airport": "Schiphol",
+				"iata": "AMS",
+				"scheduled": "2020-12-31T11:40:00+00:00"
+			},
+			"airline": {
+				"name": "China Southern Airlines",
+				"iata": "CZ"
+			},
+			"flight": {
+				"number": "7962",
+				"iata": "CZ7962"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:10:00+00:00"
+			},
+			"arrival": {
+				"airport": "Franz Josef Strauss",
+				"iata": "MUC",
+				"scheduled": "2020-12-31T10:25:00+00:00"
+			},
+			"airline": {
+				"name": "Lufthansa",
+				"iata": "LH"
+			},
+			"flight": {
+				"number": "2283",
+				"iata": "LH2283"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Manchester Airport",
+				"iata": "MAN",
+				"scheduled": "2020-12-31T10:15:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "2173",
+				"iata": "SN2173"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T15:25:00+00:00"
+			},
+			"arrival": {
+				"airport": "Lisbon Portela",
+				"iata": "LIS",
+				"scheduled": "2020-12-31T17:10:00+00:00"
+			},
+			"airline": {
+				"name": "TAP Air Portugal",
+				"iata": "TP"
+			},
+			"flight": {
+				"number": "649",
+				"iata": "TP649"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:25:00+00:00"
+			},
+			"arrival": {
+				"airport": "Geneve-cointrin",
+				"iata": "GVA",
+				"scheduled": "2020-12-31T10:45:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "2713",
+				"iata": "SN2713"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:25:00+00:00"
+			},
+			"arrival": {
+				"airport": "Geneve-cointrin",
+				"iata": "GVA",
+				"scheduled": "2020-12-31T10:45:00+00:00"
+			},
+			"airline": {
+				"name": "Hainan Airlines",
+				"iata": "HU"
+			},
+			"flight": {
+				"number": "8057",
+				"iata": "HU8057"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T14:35:00+00:00"
+			},
+			"arrival": {
+				"airport": "Frankfurt International Airport",
+				"iata": "FRA",
+				"scheduled": "2020-12-31T15:35:00+00:00"
+			},
+			"airline": {
+				"name": "Ethiopian Airlines",
+				"iata": "ET"
+			},
+			"flight": {
+				"number": "1562",
+				"iata": "ET1562"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T11:55:00+00:00"
+			},
+			"arrival": {
+				"airport": "Washington Dulles International",
+				"iata": "IAD",
+				"scheduled": "2020-12-31T14:35:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "8801",
+				"iata": "SN8801"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T15:25:00+00:00"
+			},
+			"arrival": {
+				"airport": "Lisbon Portela",
+				"iata": "LIS",
+				"scheduled": "2020-12-31T17:10:00+00:00"
+			},
+			"airline": {
+				"name": "Air Canada",
+				"iata": "AC"
+			},
+			"flight": {
+				"number": "2662",
+				"iata": "AC2662"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:40:00+00:00"
+			},
+			"arrival": {
+				"airport": "Heathrow",
+				"iata": "LHR",
+				"scheduled": "2020-12-31T10:05:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "2093",
+				"iata": "SN2093"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T07:00:00+00:00"
+			},
+			"arrival": {
+				"airport": "Frankfurt International Airport",
+				"iata": "FRA",
+				"scheduled": "2020-12-31T08:00:00+00:00"
+			},
+			"airline": {
+				"name": "Air Canada",
+				"iata": "AC"
+			},
+			"flight": {
+				"number": "9319",
+				"iata": "AC9319"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Manchester Airport",
+				"iata": "MAN",
+				"scheduled": "2020-12-31T10:15:00+00:00"
+			},
+			"airline": {
+				"name": "Hainan Airlines",
+				"iata": "HU"
+			},
+			"flight": {
+				"number": "8555",
+				"iata": "HU8555"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:45:00+00:00"
+			},
+			"arrival": {
+				"airport": "Abu Dhabi International",
+				"iata": "AUH",
+				"scheduled": "2020-12-31T23:10:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "4101",
+				"iata": "SN4101"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T13:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Franz Josef Strauss",
+				"iata": "MUC",
+				"scheduled": "2020-12-31T15:05:00+00:00"
+			},
+			"airline": {
+				"name": "Lufthansa",
+				"iata": "LH"
+			},
+			"flight": {
+				"number": "2287",
+				"iata": "LH2287"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Manchester Airport",
+				"iata": "MAN",
+				"scheduled": "2020-12-31T10:15:00+00:00"
+			},
+			"airline": {
+				"name": "United Airlines",
+				"iata": "UA"
+			},
+			"flight": {
+				"number": "9909",
+				"iata": "UA9909"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:35:00+00:00"
+			},
+			"arrival": {
+				"airport": "St-Exupéry",
+				"iata": "LYS",
+				"scheduled": "2020-12-31T11:00:00+00:00"
+			},
+			"airline": {
+				"name": "United Airlines",
+				"iata": "UA"
+			},
+			"flight": {
+				"number": "9959",
+				"iata": "UA9959"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T10:10:00+00:00"
+			},
+			"arrival": {
+				"airport": "Newark Liberty International",
+				"iata": "EWR",
+				"scheduled": "2020-12-31T12:25:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "8807",
+				"iata": "SN8807"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T07:00:00+00:00"
+			},
+			"arrival": {
+				"airport": "Frankfurt International Airport",
+				"iata": "FRA",
+				"scheduled": "2020-12-31T08:00:00+00:00"
+			},
+			"airline": {
+				"name": "Lufthansa",
+				"iata": "LH"
+			},
+			"flight": {
+				"number": "1025",
+				"iata": "LH1025"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T14:35:00+00:00"
+			},
+			"arrival": {
+				"airport": "Frankfurt International Airport",
+				"iata": "FRA",
+				"scheduled": "2020-12-31T15:35:00+00:00"
+			},
+			"airline": {
+				"name": "Lufthansa",
+				"iata": "LH"
+			},
+			"flight": {
+				"number": "1013",
+				"iata": "LH1013"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T07:00:00+00:00"
+			},
+			"arrival": {
+				"airport": "Frankfurt International Airport",
+				"iata": "FRA",
+				"scheduled": "2020-12-31T08:00:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "7015",
+				"iata": "SN7015"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:25:00+00:00"
+			},
+			"arrival": {
+				"airport": "Geneve-cointrin",
+				"iata": "GVA",
+				"scheduled": "2020-12-31T10:45:00+00:00"
+			},
+			"airline": {
+				"name": "United Airlines",
+				"iata": "UA"
+			},
+			"flight": {
+				"number": "9933",
+				"iata": "UA9933"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:25:00+00:00"
+			},
+			"arrival": {
+				"airport": "Geneve-cointrin",
+				"iata": "GVA",
+				"scheduled": "2020-12-31T10:45:00+00:00"
+			},
+			"airline": {
+				"name": "SWISS",
+				"iata": "LX"
+			},
+			"flight": {
+				"number": "4553",
+				"iata": "LX4553"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T14:35:00+00:00"
+			},
+			"arrival": {
+				"airport": "Cairo International Airport",
+				"iata": "CAI",
+				"scheduled": "2020-12-31T19:50:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "5601",
+				"iata": "SN5601"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T14:35:00+00:00"
+			},
+			"arrival": {
+				"airport": "Cairo International Airport",
+				"iata": "CAI",
+				"scheduled": "2020-12-31T19:50:00+00:00"
+			},
+			"airline": {
+				"name": "TAP Air Portugal",
+				"iata": "TP"
+			},
+			"flight": {
+				"number": "6997",
+				"iata": "TP6997"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T14:35:00+00:00"
+			},
+			"arrival": {
+				"airport": "Frankfurt International Airport",
+				"iata": "FRA",
+				"scheduled": "2020-12-31T15:35:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "7005",
+				"iata": "SN7005"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T10:10:00+00:00"
+			},
+			"arrival": {
+				"airport": "Newark Liberty International",
+				"iata": "EWR",
+				"scheduled": "2020-12-31T12:25:00+00:00"
+			},
+			"airline": {
+				"name": "SWISS",
+				"iata": "LX"
+			},
+			"flight": {
+				"number": "3010",
+				"iata": "LX3010"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:30:00+00:00"
+			},
+			"arrival": {
+				"airport": "Charles De Gaulle",
+				"iata": "CDG",
+				"scheduled": "2020-12-31T10:30:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "3633",
+				"iata": "SN3633"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T11:55:00+00:00"
+			},
+			"arrival": {
+				"airport": "Washington Dulles International",
+				"iata": "IAD",
+				"scheduled": "2020-12-31T14:35:00+00:00"
+			},
+			"airline": {
+				"name": "Lufthansa",
+				"iata": "LH"
+			},
+			"flight": {
+				"number": "9382",
+				"iata": "LH9382"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:30:00+00:00"
+			},
+			"arrival": {
+				"airport": "Charles De Gaulle",
+				"iata": "CDG",
+				"scheduled": "2020-12-31T10:30:00+00:00"
+			},
+			"airline": {
+				"name": "United Airlines",
+				"iata": "UA"
+			},
+			"flight": {
+				"number": "9943",
+				"iata": "UA9943"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T08:35:00+00:00"
+			},
+			"arrival": {
+				"airport": "Kiruna",
+				"iata": "KRN",
+				"scheduled": "2020-12-31T11:50:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "1031",
+				"iata": "SN1031"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:30:00+00:00"
+			},
+			"arrival": {
+				"airport": "Zhengzhou",
+				"iata": "CGO",
+				"scheduled": "2021-01-01T02:00:00+00:00"
+			},
+			"airline": {
+				"name": "Ethiopian Airlines",
+				"iata": "ET"
+			},
+			"flight": {
+				"number": "3604",
+				"iata": "ET3604"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T10:30:00+00:00"
+			},
+			"arrival": {
+				"airport": "Oliver Reginald Tambo International (Jan Smuts International)",
+				"iata": "JNB",
+				"scheduled": "2020-12-31T21:30:00+00:00"
+			},
+			"airline": {
+				"name": "Ethiopian Airlines",
+				"iata": "ET"
+			},
+			"flight": {
+				"number": "3715",
+				"iata": "ET3715"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T11:55:00+00:00"
+			},
+			"arrival": {
+				"airport": "Washington Dulles International",
+				"iata": "IAD",
+				"scheduled": "2020-12-31T14:35:00+00:00"
+			},
+			"airline": {
+				"name": "United Airlines",
+				"iata": "UA"
+			},
+			"flight": {
+				"number": "951",
+				"iata": "UA951"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T11:55:00+00:00"
+			},
+			"arrival": {
+				"airport": "Washington Dulles International",
+				"iata": "IAD",
+				"scheduled": "2020-12-31T14:35:00+00:00"
+			},
+			"airline": {
+				"name": "Air Canada",
+				"iata": "AC"
+			},
+			"flight": {
+				"number": "5947",
+				"iata": "AC5947"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T11:50:00+00:00"
+			},
+			"arrival": {
+				"airport": "Mohamed V",
+				"iata": "CMN",
+				"scheduled": "2020-12-31T15:10:00+00:00"
+			},
+			"airline": {
+				"name": "Royal Air Maroc",
+				"iata": "AT"
+			},
+			"flight": {
+				"number": "353",
+				"iata": "AT353"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:40:00+00:00"
+			},
+			"arrival": {
+				"airport": "Heathrow",
+				"iata": "LHR",
+				"scheduled": "2020-12-31T10:05:00+00:00"
+			},
+			"airline": {
+				"name": "Hainan Airlines",
+				"iata": "HU"
+			},
+			"flight": {
+				"number": "8558",
+				"iata": "HU8558"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:40:00+00:00"
+			},
+			"arrival": {
+				"airport": "Heathrow",
+				"iata": "LHR",
+				"scheduled": "2020-12-31T10:05:00+00:00"
+			},
+			"airline": {
+				"name": "United Airlines",
+				"iata": "UA"
+			},
+			"flight": {
+				"number": "9986",
+				"iata": "UA9986"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:40:00+00:00"
+			},
+			"arrival": {
+				"airport": "Heathrow",
+				"iata": "LHR",
+				"scheduled": "2020-12-31T10:05:00+00:00"
+			},
+			"airline": {
+				"name": "Air Canada",
+				"iata": "AC"
+			},
+			"flight": {
+				"number": "6337",
+				"iata": "AC6337"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:35:00+00:00"
+			},
+			"arrival": {
+				"airport": "Kastrup",
+				"iata": "CPH",
+				"scheduled": "2020-12-31T11:05:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "2257",
+				"iata": "SN2257"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T10:10:00+00:00"
+			},
+			"arrival": {
+				"airport": "Newark Liberty International",
+				"iata": "EWR",
+				"scheduled": "2020-12-31T12:25:00+00:00"
+			},
+			"airline": {
+				"name": "Lufthansa",
+				"iata": "LH"
+			},
+			"flight": {
+				"number": "8854",
+				"iata": "LH8854"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:35:00+00:00"
+			},
+			"arrival": {
+				"airport": "Kastrup",
+				"iata": "CPH",
+				"scheduled": "2020-12-31T11:05:00+00:00"
+			},
+			"airline": {
+				"name": "United Airlines",
+				"iata": "UA"
+			},
+			"flight": {
+				"number": "9911",
+				"iata": "UA9911"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T15:00:00+00:00"
+			},
+			"arrival": {
+				"airport": "Douala",
+				"iata": "DLA",
+				"scheduled": "2020-12-31T21:50:00+00:00"
+			},
+			"airline": {
+				"name": "SWISS",
+				"iata": "LX"
+			},
+			"flight": {
+				"number": "4528",
+				"iata": "LX4528"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T15:00:00+00:00"
+			},
+			"arrival": {
+				"airport": "Douala",
+				"iata": "DLA",
+				"scheduled": "2020-12-31T21:50:00+00:00"
+			},
+			"airline": {
+				"name": "Brussels Airlines",
+				"iata": "SN"
+			},
+			"flight": {
+				"number": "371",
+				"iata": "SN371"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T15:00:00+00:00"
+			},
+			"arrival": {
+				"airport": "Douala",
+				"iata": "DLA",
+				"scheduled": "2020-12-31T21:50:00+00:00"
+			},
+			"airline": {
+				"name": "United Airlines",
+				"iata": "UA"
+			},
+			"flight": {
+				"number": "9940",
+				"iata": "UA9940"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:35:00+00:00"
+			},
+			"arrival": {
+				"airport": "St-Exupéry",
+				"iata": "LYS",
+				"scheduled": "2020-12-31T11:00:00+00:00"
+			},
+			"airline": {
+				"name": "Hainan Airlines",
+				"iata": "HU"
+			},
+			"flight": {
+				"number": "8562",
+				"iata": "HU8562"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T09:35:00+00:00"
+			},
+			"arrival": {
+				"airport": "St-Exupéry",
+				"iata": "LYS",
+				"scheduled": "2020-12-31T11:00:00+00:00"
+			},
+			"airline": {
+				"name": "Air Canada",
+				"iata": "AC"
+			},
+			"flight": {
+				"number": "6368",
+				"iata": "AC6368"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T15:25:00+00:00"
+			},
+			"arrival": {
+				"airport": "Lisbon Portela",
+				"iata": "LIS",
+				"scheduled": "2020-12-31T17:10:00+00:00"
+			},
+			"airline": {
+				"name": "Ethiopian Airlines",
+				"iata": "ET"
+			},
+			"flight": {
+				"number": "1736",
+				"iata": "ET1736"
+			}
+		},
+		{
+			"flight_date": "2020-12-31",
+			"departure": {
+				"airport": "Brussels Airport",
+				"iata": "BRU",
+				"scheduled": "2020-12-31T10:10:00+00:00"
+			},
+			"arrival": {
+				"airport": "Newark Liberty International",
+				"iata": "EWR",
+				"scheduled": "2020-12-31T12:25:00+00:00"
+			},
+			"airline": {
+				"name": "Air Canada",
+				"iata": "AC"
+			},
+			"flight": {
+				"number": "5919",
+				"iata": "AC5919"
+			}
+		}
+	]
+}

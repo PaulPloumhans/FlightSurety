@@ -283,7 +283,6 @@ contract('Flight Surety Tests', async (accounts) => {
     it('FlightSuretyApp - Multiparty Consensus - for the 5th airline, a 50% consensus of 2 funded airlines is required to register a new airline', async () => {
         // ARRANGE
         // the ith airline is accounts[i]
-
         // first check that first 4 airlines are funded (hence can participate in voting process)
         for(i = 1; i <= 4; i++){
             let isAirlineFunded = await config.flightSuretyApp.isFundedAirline.call(accounts[i]);

@@ -49,19 +49,19 @@ contract FlightSuretyData {
     ///      This is used on all state changing functions to pause the contract in 
     ///      the event there is an issue that needs to be fixed
     modifier requireIsOperational(){
-        require(operational, "Contract is currently not operational");
+        require(operational, "Contract FlightSuretyData is currently not operational");
         _;
     }
 
     /// @dev Modifier that requires the "ContractOwner" account to be the function caller
     modifier requireContractOwner(){
-        require(msg.sender == contractOwner, "Caller is not contract owner");
+        require(msg.sender == contractOwner, "Caller of FlightSuretyData is not contract owner");
         _;
     }
 
     /// @dev Modifier that requires the function caller to be authorized
     modifier requireAuthorizedCaller(){
-        require(authorizedCallers[msg.sender], "Caller is not authorized");
+        require(authorizedCallers[msg.sender], "Caller of FlightSuretyData is not authorized");
         _;
     }
 
