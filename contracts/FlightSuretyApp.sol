@@ -340,6 +340,8 @@ contract FlightSuretyApp {
     {
         // check that inurance premium is max 1 ether
         require(msg.value <= 1 ether);
+        // check that the insurance is funded
+        require(mapAirlines[airline].status == FUNDED);
         // forward funds to data contract
         flightSuretyData.buy{value:msg.value}(airline, flight, timestamp, msg.sender);        
     }
@@ -360,6 +362,10 @@ contract FlightSuretyApp {
         return flightSuretyData.getCredit(msg.sender);
     }
 
+    /**
+     *  @dev Return amount insured
+     *
+    */
     function getInsurance(address airline, string memory flight, uint256 timestamp) view external returns(uint256) {
         return flightSuretyData.getInsurance(msg.sender, airline, flight, timestamp);
     }
