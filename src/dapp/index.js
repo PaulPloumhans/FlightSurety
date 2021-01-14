@@ -1,7 +1,7 @@
 import FlightSuretyApp from '../../build/contracts/FlightSuretyApp.json';
 import FlightSuretyData from '../../build/contracts/FlightSuretyData.json';
 import Config from './config.json';
-import AirDB from './airDB.json';
+//import AirDB from './airDB.json';
 import Web3 from 'web3';
 import DOM from './dom';
 //import Contract from './contract';
@@ -20,18 +20,24 @@ var htm = {
         btnFund : document.getElementById('btnAirlineFund'),        
     }
 };
+// move this back into htm at some point...
+const htmAirlinesBtnAssign = document.getElementById('btnAirlineAssignName');
 
 // Dapp
 let flightSuretyApp;
 let flightSuretyData;
 
-// DB matchin airline addresses with names
+// DB matchin airline addresses with names - to be fetched from server
 let airlinesIDs = new Map(); // key = eth address, value = airlinesDB entry
+let airlinesDB;
+let airlinesDBMap = new Map();
+let flightsDB;
+
+// server
+const serverURL = 'http://localhost:3000';
 
 // current account (from Metamask) need to make sure that this is a CheckSum address
 let currentAccount; 
-
-const htmAirlinesBtnAssign = document.getElementById('btnAirlineAssignName');
 
 const isMetaMaskInstalled = () => {
     const { ethereum } = window
@@ -86,30 +92,39 @@ const initialize = async(network) => {
     // ************                  MANAGEMENT OF AIRLINES                   ************
     // ***********************************************************************************
 
-    // load flights and airlines
-    let airlinesDB = AirDB['airlinesDB'];
-    let flightsDB = AirDB['flightsDB'];
-    
-
-    //console.log('airlinesDB = ', airlinesDB);
+    // load flights and airlines - initialize global variables
+    airlinesDB = await serverGetJSON('airlinesDB');
+    for (let entry of airlinesDB){
+        airlinesDBMap.set(entry.iata, entry.name);
+    }    
+    flightsDB = await serverGetJSON('flightsDB');
 
     // ************               ASSIGNMENT OF NAMES TO AIRLINES             ************
 
     // update menu
     let airlinesNamesMenu = '';
     for (let entry of airlinesDB){
-        //console.log('entry  = ', entry);
         airlinesNamesMenu += '<option>' + entry.name + ' (' + entry.iata + ') </option>';
     }
     //console.log('airlinesNamesMenu = ', airlinesNamesMenu);
     htm.airlines.namesMenu.innerHTML = airlinesNamesMenu;
  
+    // load airlinesIDs from server and refresh status
+    airlinesIDs = await serverGetMapJSON('airlinesIDs');
+    refreshAirlinesStatus();
+
     // htm.airlines.btnAssign
-    htmAirlinesBtnAssign.onclick = () => { 
+    htmAirlinesBtnAssign.onclick = async () => { 
         const idx = htm.airlines.namesMenu.selectedIndex;
         console.log('idx = ', idx);
-        airlinesIDs.set(currentAccount, airlinesDB[idx]);
-        console.log('airlinesIDs = ', airlinesIDs);
+        const assignData = {
+            address : currentAccount,
+            iata    : airlinesDB[idx].iata 
+        };
+        // sending info to server
+        await serverPostJSON('assign', assignData);
+        // get new airlinesIDs
+        airlinesIDs = await serverGetMapJSON('airlinesIDs');
         refreshAirlinesStatus();
     };
 
@@ -123,16 +138,13 @@ const initialize = async(network) => {
             refreshAirlinesStatus();
         }).catch( err => {
             console.log('error caught in promise: ', err.message);
-            window.alert('Could not register airlilne '+ currentAccount);
+            window.alert('Could not register airline '+ currentAccount);
         });         
     }
 
     // button for airline funding
     htm.airlines.btnFund.onclick = () => {
-        console.log('htm.airlines.amountToFund.value = ', htm.airlines.amountToFund.value);
-        console.log('typeof(htm.airlines.amountToFund.value) = ', typeof(htm.airlines.amountToFund.value));
         const funding = parseInt(htm.airlines.amountToFund.value);
-        console.log('typeof(funding) = ', typeof(funding));        
         flightSuretyApp.methods.fund().send({from : currentAccount, value : web3.utils.toWei(htm.airlines.amountToFund.value, 'ether')}).then( () =>{
             refreshAirlinesStatus();
         }).catch( err => {
@@ -222,15 +234,10 @@ function refreshAirlinesStatus(){
                     let entryName = '';
                     let entryIata = '';
                     if (airlinesIDs.has(airlines[i])) {
-                        console.log('airlinesIDs.get(entry) = ', airlinesIDs.get(airlines[i]));
-                        entryName = airlinesIDs.get(airlines[i]).name;
-                        entryIata = airlinesIDs.get(airlines[i]).iata;
-                    }else{
-                        console.log('airlines[i] = ' + airlines[i] + ' not found in ');
-                        console.log('airlinesIDs = ', airlinesIDs);
+                        entryIata = airlinesIDs.get(airlines[i]);
+                        entryName = airlinesDBMap.get(entryIata);
                     }
-                    tableRow += '<tr><td>' + airlines[i] + '</td><td>' + entryName + '</td><td>' + entryIata  + '</td><td>' + airlineStatus(status[i]) + '</td></tr>';
-                    console.log('tableRow = ',tableRow);
+                    tableRow += '<tr><td>' + airlines[i] + '</td><td>' + entryName + '</td><td>' + entryIata  + '</td><td>' + airlineStatus(status[i]) + '</td></tr>';                    
                 }
                 htm.airlines.tableStatus.innerHTML = tableRow;
             });                                
@@ -241,6 +248,58 @@ function refreshAirlinesStatus(){
     
 };
 
+// get 'dataName' from the server
+async function serverGetJSON(dataName) {
+    const url = serverURL + '/' + dataName;
+    
+    const response = await fetch(url, { method: 'GET' });
+    if(response.ok){
+        const data = await response.json();
+        console.log('GET - Success. Response:', data);
+        return data;
+    }else{
+        const message = `An error has occured in serverGetJSON(${dataName}): ${response.status}`;
+        throw new Error(message);
+    }
+         
+};
+
+// post data to server, using route routeName
+async function serverPostJSON(routeName, data) {
+    const url = serverURL + '/' + routeName;
+    const fetchOptions = {
+        method: 'POST',
+        headers:{ "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+    };
+    
+    const response = await fetch(url, fetchOptions);
+    if(response.ok){
+        const tmp = await response.json();
+        console.log('POST - Success. Response:', response);
+        return;
+    }else{
+        const message = `An error has occured in serverPostJSON(${routeName}, ${JSON.stringify(data)}): ${response.status}`;
+        throw new Error(message);
+    }         
+};
+
+// update airlinesIDs
+async function serverGetMapJSON(dataName) {    
+    const url = serverURL + '/' + dataName;
+    
+    const response = await fetch(url, { method: 'GET' });
+    // receives a string to be converted back into a map
+    if(response.ok){
+        const data = await response.json();
+        const dataMap = new Map(data);
+        console.log('GET - Success');
+        return dataMap;
+    }else{
+        const message = `An error has occured in serverGetMapJSON(${dataName}): ${response.status}`;
+        throw new Error(message);
+    }
+}
 
 window.addEventListener('DOMContentLoaded', initialize('localhost'));
 

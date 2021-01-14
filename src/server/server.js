@@ -6,6 +6,8 @@ import express from 'express';
 import 'regenerator-runtime/runtime';
 
 const fs = require('fs');
+const cors = require('cors');
+const bodyParser = require('body-parser');
 
 let app; // express server to export
 const N_ORACLES = 3; // number of oracles
@@ -106,32 +108,51 @@ const initialize = async () => {
   let flightsDB = AirDB['flightsDB'];
   //console.log('airlinesDB = ', airlinesDB);
   //console.log('flightsDB = ', flightsDB);
+  let airlinesIDs = new Map();
 
   // start express server
 
   const app = express();
   const port = 3000;
   
+  app.use(cors({
+    origin: 'http://localhost:8000'
+  }));
+
   app.get('/', (req, res) => {
     res.send('Hello World!')
   })
 
   app.get('/airlinesDB', (req, res) => {
       res.send(JSON.stringify(airlinesDB));
+      console.log('airlinesDB = ', airlinesDB);
   });
 
   app.get('/flightsDB', (req, res) => {
       res.send(JSON.stringify(flightsDB));
+      console.log('flightsDB = ', flightsDB);
   });
 
+  app.get('/airlinesIDs', (req, res) => {
+      res.send(JSON.stringify([...airlinesIDs]));
+      console.log('airlinesIDs = ', airlinesIDs);
+  });
+
+  //app.use(bodyParser.json());
+  app.use(express.json());
+
   app.post('/assign', (req, res) => {
-      let tmp = req.query;
-      res.send(JSON.stringify(tmp));
+      let assignInfo = req.body;
+      airlinesIDs.set(assignInfo.address, assignInfo.iata);
+      console.log('req = ', req);
+      console.log('req.body = ', req.body);
+      console.log('airlinesIDs = ', airlinesIDs);
+      res.send(JSON.stringify(assignInfo));
   });
   
   app.listen(port, () => {
-    console.log(`Example app now listening at http://localhost:${port}`)
-  })
+    console.log(`FlightSuretyServer now listening at http://localhost:${port}`)
+  });
 
 };
 
