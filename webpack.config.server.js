@@ -6,7 +6,7 @@ const StartServerPlugin = require('start-server-webpack-plugin')
 module.exports = {
     entry: [
         'webpack/hot/poll?1000',
-        './src/server/index'
+        './src/server/server.js'
     ],
     watch: true,
     target: 'node',
@@ -17,7 +17,7 @@ module.exports = {
     module: {
         rules: [{
             test: /\.js?$/,
-            use: 'babel-loader',
+            use: ['babel-loader'],
             exclude: /node_modules/
         }]
     },

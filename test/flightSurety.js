@@ -1,6 +1,7 @@
 var Test = require('../config/testConfig.js');
 var BigNumber = require('bignumber.js');
 const assert = require('assert');
+const { time } = require('console');
 
 contract('Flight Surety Tests', async (accounts) => {
 
@@ -330,6 +331,51 @@ contract('Flight Surety Tests', async (accounts) => {
         assert.equal(statusAfterSecond, false, "Sixth airline cannot be registered after two votes");
         assert.equal(statusAfterThird, true, "Sixth airline should be registered after three votes");
 
+    });
+
+    it('FlightSuretyApp - Passenger - Passenger can buy an insurance for up to than 1 ether', async () => {
+        // ARRANGE
+        let firstAirline = accounts[1];
+        let passenger = accounts[7];
+        let flight = 'ND1309'; // Course number
+        let timestamp = Math.floor(Date.now() / 1000);
+        let premium = 1; // insurance premium in ether
+
+        // ACT
+        ok = true;
+        let verifiedAmount = 0;
+        try{
+            await config.flightSuretyApp.buy(firstAirline, flight, timestamp, {from: passenger, value: (premium*config.weiMultiple)});
+            verifiedAmount = await config.flightSuretyApp.getInsurance(firstAirline, flight, timestamp, {from: passenger});
+        }
+        catch(e){
+            ok = false;
+        }
+        
+        // ASSERT
+        assert.equal(ok, true, `Passenger can buy insurance for ${premium} ether` );
+        assert.equal(verifiedAmount == premium*config.weiMultiple, true, `Amount of ether in insurance contract is ${verifiedAmount} instead of ${premium}`);
+    });
+
+    it('FlightSuretyApp - Passenger - Passenger cannot buy an insurance for more than 1 ether', async () => {
+        // ARRANGE
+        let firstAirline = accounts[1];
+        let passenger = accounts[7];
+        let flight = 'ND1310'; // Course number
+        let timestamp = Math.floor(Date.now() / 1000);
+        let premium = 1.5; // insurance premium in ether
+        
+        // ACT
+        ok = true;
+        try{
+            await config.flightSuretyApp.buy(firstAirline, flight, timestamp, {from: passenger, value: (premium*config.weiMultiple)});
+        }
+        catch(e){
+            ok = false;
+        }
+        
+        // ASSERT
+        assert.equal(ok, false, `Passenger should not be able to buy insurance for ${premium} ether` );
     });
 
 });

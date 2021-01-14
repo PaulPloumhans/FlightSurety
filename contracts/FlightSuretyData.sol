@@ -20,6 +20,22 @@ contract FlightSuretyData {
     // (the registration is a prerequisite taken care of in the App contract)
     mapping(address => bool) private fundedAirlines;                    // funded (and thus also approved) airlines
 
+    // management of passenger insurance
+    // struct Insurance {        
+    //     address passenger;
+    //     uint256 amount;
+    // }
+
+    // store premia paid for insuraces
+    // first key = result of getFlightKey, second key is address of passenger
+    mapping(bytes32 => mapping(address => uint256)) private insurances;
+
+    // list of insurees, key = result of getFlightKey
+    mapping(bytes32 => address[]) private insurees;
+
+    // store credit of passengers
+    mapping(address => uint256) private credit;
+
     /********************************************************************************************/
     /*                                       EVENT DEFINITIONS                                  */
     /********************************************************************************************/
@@ -105,65 +121,88 @@ contract FlightSuretyData {
     /********************************************************************************************/
 
    /**
-    * @dev Add an airline to the registration queue
-    *      Can only be called from FlightSuretyApp contract
-    *
-    */   
-    function registerAirline
-                            (   
-                            )
-                            external
-                            pure
-    {
-    }
-
-
-   /**
     * @dev Buy insurance for a flight
     *
     */   
-    function buy
-                            (                             
-                            )
-                            external
-                            payable
+    function buy (address airline, string memory flight, uint256 timestamp, address passenger)
+        external
+        payable
+        requireAuthorizedCaller
     {
-
+        // get flight key
+        bytes32 key = getFlightKey(airline, flight, timestamp);
+        // add insurance to insurances
+        require(insurances[key][passenger] == 0) ; // only one insurance allowed per passenger per flight
+        // book insurance premium
+        insurances[key][passenger] = msg.value;
+        // add insuree to list
+        if (insurees[key].length == 0)
+            insurees[key] = new address[](0);
+        insurees[key].push(passenger);
     }
 
     /**
-     *  @dev Credits payouts to insurees
+     *  @dev Credits payouts to insurees whose insurace matches getFlightKey(airline, flight, timestamp)
     */
-    function creditInsurees
-                                (
-                                )
-                                external
-                                pure
+    function creditInsurees (
+        address airline,
+        string memory flight,
+        uint256 timestamp,
+        uint256 payOffNumerator,
+        uint256 payOffDenominator
+    )
+        external
+        requireAuthorizedCaller
     {
+        // get flight key
+        bytes32 key = getFlightKey(airline, flight, timestamp);
+        // loop on insurees
+        for (uint256 i=0; i < insurees[key].length; i++){
+            // address of passenger
+            address passenger = insurees[key][i];
+            // multiply paid premium by payOff
+            uint256 payout = (insurances[key][passenger]).mul(payOffNumerator).div(payOffDenominator);
+            // set insured amount for flight to 0
+            delete insurances[key][passenger];
+            // update passenger credit
+            credit[passenger] = credit[passenger].add(payout);
+        }        
+        // delete insurees for this times key
+        delete insurees[key];        
     }
-    
 
     /**
      *  @dev Transfers eligible payout funds to insuree (to be called after creditInsurees)
      *
     */
-    function pay
-                            (
-                            )
-                            external
-                            pure
-    {
+    function pay(address passenger) external requireAuthorizedCaller{
+        uint256 amount = credit[passenger];
+        credit[passenger] = 0;
+        payable(passenger).transfer(amount);
     }
 
-    function getFlightKey
-                        (
-                            address airline,
-                            string memory flight,
-                            uint256 timestamp
-                        )
-                        pure
-                        internal
-                        returns(bytes32) 
+    /**
+     *  @dev Returns credit of a passenger
+     *
+    */
+    function getCredit(address passenger) view external requireAuthorizedCaller returns(uint256){
+        return credit[passenger];        
+    }
+
+    /**
+     *  @dev Returns amount (premium) of passenger insurance
+     *
+    */
+    function getInsurance(address passenger, address airline, string memory flight, uint256 timestamp) view external requireAuthorizedCaller returns(uint256){
+        // get flight key
+        bytes32 key = getFlightKey(airline, flight, timestamp);
+        return insurances[key][passenger];
+    }
+
+    function getFlightKey(address airline, string memory flight, uint256 timestamp)
+        pure
+        internal
+        returns(bytes32) 
     {
         return keccak256(abi.encodePacked(airline, flight, timestamp));
     }

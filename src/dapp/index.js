@@ -51,6 +51,7 @@ const initialize = async(network) => {
     if(!isMetaMaskInstalled())
         window.alert('Metamask is not installed. Please install Metamask to use this site');
     
+    // silence warnings
     ethereum.autoRefreshOnNetworkChange = false;
     // get accounts (should be an array of length 1, with accounts[0] the current account)
     let accounts;
@@ -78,7 +79,7 @@ const initialize = async(network) => {
     flightSuretyApp = new web3.eth.Contract(FlightSuretyApp.abi, config.appAddress);
     flightSuretyData = new web3.eth.Contract(FlightSuretyData.abi, config.dataAddress);
     flightSuretyData.methods.authorizeCaller(config.appAddress).send({from : currentAccount}).catch( (err) => {
-        console.log('Error when trying to authorize flightSuretyApp at address ${config.address} to call flightSuretyData: ', err);
+        console.log(`Error when trying to authorize flightSuretyApp at address ${config.address} to call flightSuretyData: `, err);
     });
     
     // ***********************************************************************************
@@ -146,7 +147,7 @@ const initialize = async(network) => {
     // ************               REPAIR INITIAL CAPABILITIES                 ************
     // ***********************************************************************************
 
-    /* flightSuretyApp.methods.isOperational().call().then( (res,err) => {
+    flightSuretyApp.methods.isOperational().call().then( (res,err) => {
         console.log('res = ', res);
         display('Operational Status', 'Check if contract is operational', [ { label: 'Operational Status', error: err, value: res} ]);
     });
@@ -155,13 +156,12 @@ const initialize = async(network) => {
         let flight = DOM.elid('flight-number').value;
         // Write transaction
         let airline = accounts[0];
-        //console.log('airline = ',airline);
-        flightSuretyApp.methods.fetchFlightStatus(airline,flight,Math.floor(Date.now() / 1000)).call().then( (res,err) => {
+        console.log('fetching flight status...');
+        flightSuretyApp.methods.fetchFlightStatus(airline,flight,Math.floor(Date.now() / 1000)).send({from : currentAccount}).then( (res,err) => {
             display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: err, value: res.flight + ' ' + res.timestamp} ]);
+            console.log('...done');
         });
-    }); */
-
-    
+    });   
 
 }
 
