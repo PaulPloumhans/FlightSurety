@@ -10,7 +10,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 let app; // express server to export
-const N_ORACLES = 3; // number of oracles
+const N_ORACLES = 10; // number of oracles
 const IDX_FIRST_ORACLE = 10; // index of first oracle in set of accounts
 
 const initialize = async () => {
@@ -35,24 +35,7 @@ const initialize = async () => {
   }).catch( () => {
     console.error('Could no call contract method');
   });
-
-  /* flightSuretyApp.methods.getAirlines().call().then( (res,err) =>{
-    console.log('airlines = ', res);    
-  }).catch( () => {
-    console.error('Could no call getAirlines!');
-  }); */
-
-  // ***********************************************************************************
-  // ************                 SETUP ORACLE EVENT CAPTURE                ************
-  // ***********************************************************************************
-
-  flightSuretyApp.events.OracleRequest({fromBlock: "latest"}, function (error, event) {
-    if (error){
-      console.log(error);
-    }
-    console.log('Captured event :' + event.event);
-    console.log(`index/airline/flight/timestamp : ${event.index}/${event.airline}/${event.flight}/${event.timestamp}`);
-  });
+  
 
   // ***********************************************************************************
   // *************     REGISTER ORACLES AND PERSIST THEIR STATE IN MEMORY  *************
@@ -69,8 +52,8 @@ const initialize = async () => {
     for(let i = 0; i < N_ORACLES; i++){
       let idx = IDX_FIRST_ORACLE+i;
       // we could prevent this for oracles already registered (via a modifier in smart contract)
-      console.log('registering oracle');
-      await flightSuretyApp.methods.registerOracle().send({ from: accounts[idx], value : oracleFee, gas: 1000000 });
+      console.log('registering oracle ', i+1);
+      await flightSuretyApp.methods.registerOracle().send({ from: accounts[idx], value : oracleFee, gas: 5000000 });
       //let gas = await flightSuretyApp.methods.registerOracle().estimateGas({ value: oracleFee, from: accounts[idx] });
       //console.log('gas estimate = ', gas);
       // recover indices, convert them to numbers and store them
@@ -84,7 +67,41 @@ const initialize = async () => {
     console.log('oracleIndexes = ', oracleIndexes);
   }
 
-  
+  // ***********************************************************************************
+  // ************                 SETUP ORACLE EVENT CAPTURE                ************
+  // ***********************************************************************************
+
+  flightSuretyApp.events.OracleRequest({fromBlock: "latest"}, async function (error, event) {
+    if (error){
+      console.log(error);
+    }else{
+      const rv = event.returnValues;
+      const index = parseInt(rv.index);
+      console.log('Captured event :' + event.event);
+      console.log(`index/airline/flight/timestamp : ${index}/${rv.airline}/${rv.flight}/${rv.timestamp}`);
+      // loop on oracles
+      // register all oracles
+      for(let i = 0; i < N_ORACLES; i++){
+        let idx = IDX_FIRST_ORACLE+i;
+        // get oracle indexes
+        const indexes = oracleIndexes.get(accounts[idx]);
+        for(let j=0; j < indexes.length; j++){
+          if (indexes[j] === index){ // one of the indices of oracle i is relevant
+            //const statusCode = (1+Math.floor(Math.random() * 5))*10; // random multiple of 10 in [10;50]
+            const statusCode = 20; // random multiple of 10 in [10;50]
+            try{
+              await flightSuretyApp.methods.submitOracleResponse(index, rv.airline, rv.flight, rv.timestamp, statusCode).send({ from: accounts[idx], gas: 1000000});
+            console.log(`Oracle ${i+1} submits index/statusCode = ${index}/${statusCode}`);
+            }
+            catch(err){
+              console.log(`Error calling submitOracleResponse for Oracle ${i+1} submitting index/statusCode = ${index}/${statusCode}`);
+              //console.log('error: ', err);
+            }
+          } 
+        }        
+      }
+    }    
+  });
 
 
   // ACT
@@ -125,17 +142,17 @@ const initialize = async () => {
 
   app.get('/airlinesDB', (req, res) => {
       res.send(JSON.stringify(airlinesDB));
-      console.log('airlinesDB = ', airlinesDB);
+      //console.log('airlinesDB = ', airlinesDB);
   });
 
   app.get('/flightsDB', (req, res) => {
       res.send(JSON.stringify(flightsDB));
-      console.log('flightsDB = ', flightsDB);
+      //console.log('flightsDB = ', flightsDB);
   });
 
   app.get('/airlinesIDs', (req, res) => {
       res.send(JSON.stringify([...airlinesIDs]));
-      console.log('airlinesIDs = ', airlinesIDs);
+      //console.log('airlinesIDs = ', airlinesIDs);
   });
 
   //app.use(bodyParser.json());
@@ -144,9 +161,9 @@ const initialize = async () => {
   app.post('/assign', (req, res) => {
       let assignInfo = req.body;
       airlinesIDs.set(assignInfo.address, assignInfo.iata);
-      console.log('req = ', req);
-      console.log('req.body = ', req.body);
-      console.log('airlinesIDs = ', airlinesIDs);
+      // console.log('req = ', req);
+      // console.log('req.body = ', req.body);
+      // console.log('airlinesIDs = ', airlinesIDs);
       res.send(JSON.stringify(assignInfo));
   });
   

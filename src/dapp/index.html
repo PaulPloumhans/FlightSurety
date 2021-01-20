@@ -40,7 +40,7 @@
         <div class="container-fluid">
             <ul class="nav navbar-nav">
                 <li><a class="nav-link" href="#airlines">Airlines</a></li>
-                <li><a class="nav-link" href="#passengers">Passengers</a></li>
+                <li><a class="nav-link" href="#insurance">Insurance</a></li>
                 <li><a class="nav-link" href="#display-wrapper">Admin</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -57,8 +57,8 @@
     </nav>
 
     <main>
-        <div class="row top-20">
-            <div class="col-10 container" id="airlines">
+        <div class="row top-20" id="airlines">
+            <div class="col-10 container">
                 <h1>Airlines</h1>
                     <h4>Match airline name with current user address (optional)</h4>
                         <form>
@@ -67,7 +67,7 @@
                                     Assign airline name to current address (optional)
                                 </div>
                                 <div class="col-4">
-                                    <select class="form-control" id="airlinesNamesMenu"></select>                            
+                                    <select class="form-select" id="airlinesNamesMenu"></select>                            
                                 </div>
                                 <div class="col-3">
                                     <button type="button" class="btn btn-primary" id="btnAirlineAssignName">Assign</button>
@@ -108,7 +108,7 @@
                                     Enter amount of funding for current user (in ETH)
                                 </div>
                                 <div class="col-4">
-                                    <input type="number" class="form-control" placeholder="10" id="airlineAmountToFund"></select>                            
+                                    <input type="number" class="form-control" placeholder="1" id="airlineAmountToFund"></input>                            
                                 </div>
                                 <div class="col-3">
                                     <button type="button" class="btn btn-primary" id="btnAirlineFund">Fund</button>
@@ -118,15 +118,80 @@
             </div>
         </div>
 
-        <div class="row top-20">
-            <div class="col-10 container" id="passengers">
-                <h1>Passengers</h1>
-                <p>Passengers info goes here</p>
+        <div class="row top-20" id="insurance">
+            <div class="col-10 container">
+                <h1>Insurance</h1>
+                    <h4>Purchase insurance</h4>
+                        <form>
+                            <div class="row top-20 bottom-20">
+                                <div class="col-3">
+                                    Select (funded) airline to purchase flight insurance on
+                                </div>
+                                <div class="col-6">
+                                    <select class="form-select" id="insuranceAirlinesMenu" placeholder="Select airline"></select>                            
+                                </div>                                                                      
+                            </div>
+                            <div class="row top-20 bottom-20">
+                                <div class="col-3">
+                                    Select flight to insure
+                                </div>
+                                <div class="col-6">
+                                    <select class="form-select" id="insuranceFlightsMenu"></select>                            
+                                </div>                                                                      
+                            </div>
+                            <div class="row top-20 bottom-20">
+                                <div class="col-3">
+                                    Enter amount insured for current user (in ETH)
+                                </div>
+                                <div class="col-4">
+                                    <input type="text" class="form-control" id="insuranceAmount"></input>                            
+                                </div>
+                                <div class="col-3">
+                                    <button type="button" class="btn btn-primary" id="btnInsuranceBuy">Buy</button>
+                                </div>                                              
+                            </div>
+                        </form>
+                    <h4>Redeem insurance</h4>
+                        <form>
+                            <div class="row top-20 bottom-20">
+                                <div class="col-3">
+                                    Select purchased insurance of current user
+                                </div>
+                                <div class="col-6">
+                                    <select class="form-select" id="insurancePurchasedMenu"></select>                            
+                                </div>
+                                                                                                
+                            </div>
+                            <div class="row top-20 bottom-20">
+                                <div class="col-3">
+                                    <button type="button" class="btn btn-primary" id="insuranceCheckFlightStatus">Check flight status</button>
+                                </div>
+                                <div class="col-3">
+                                    <ul class="list-group">
+                                        <li class="list-group-item" id="flightStatus">TBD</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="row top-20 bottom-20">
+                                <div class="col-3">
+                                    <button type="button" class="btn btn-primary" id="btnUserCredit">Check user credit</button>                                
+                                </div>
+                                <div class="col-4">
+                                    <input type="text" class="form-control" id="creditAmount" readonly></input> 
+                                    <!-- <ul class="list-group">
+                                        <li class="list-group-item" id="creditAmount">0</li>
+                                    </ul> -->
+                                </div>
+                                <div class="col-3">
+                                    <button type="button" class="btn btn-primary" id="btnWithdraw">Withdraw</button>
+                                </div>                                              
+                            </div>
+                        </form>    
             </div>
         </div>
 
-        <div class="row top-20" >
-            <div class="col-10 container" id="display-wrapper">
+        <div class="row top-20" id="display-wrapper">
+            <div class="col-10 container" id="sub-tmp">
                 <h1>Old stuff</h1>
                 <label class="form">Flight</label> <input type="text" id="flight-number"> <btn class="btn btn-primary" id="submit-oracle">Submit to Oracles</btn>
             </div>

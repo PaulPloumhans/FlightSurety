@@ -18,20 +18,35 @@ var htm = {
         btnRegister : document.getElementById('btnAirlineRegister'),
         amountToFund : document.getElementById('airlineAmountToFund'),
         btnFund : document.getElementById('btnAirlineFund'),        
+    },
+    insurance : {
+        airlinesMenu: document.getElementById('insuranceAirlinesMenu'),        
+        flightsMenu: document.getElementById('insuranceFlightsMenu'),
+        amount: document.getElementById('insuranceAmount'),
+        btnBuy: document.getElementById('btnInsuranceBuy'),
+        purchaseMenu: document.getElementById('insurancePurchasedMenu'),
+        btnCheckFlightStatus: document.getElementById('insuranceCheckFlightStatus'),
+        btnUserCredit: document.getElementById('btnUserCredit'),
+        creditAmount: document.getElementById('creditAmount'),
+        btnWithdraw : document.getElementById('btnWithdraw'),
     }
 };
 // move this back into htm at some point...
 const htmAirlinesBtnAssign = document.getElementById('btnAirlineAssignName');
 
 // Dapp
-let flightSuretyApp;
-let flightSuretyData;
+let flightSuretyApp = null;
+let flightSuretyData = null;
 
 // DB matchin airline addresses with names - to be fetched from server
-let airlinesIDs = new Map(); // key = eth address, value = airlinesDB entry
+let airlinesIDs = new Map(); // key = eth address, value = iata
 let airlinesDB;
-let airlinesDBMap = new Map();
+let airlinesDBMap = new Map(); // key = iata, value = name
+let fundedAirlines = []; // array of adresses of funded airlines
 let flightsDB;
+
+let web3;
+
 
 // server
 const serverURL = 'http://localhost:3000';
@@ -51,7 +66,10 @@ const initialize = async(network) => {
     // ************            SETUP METAMASK AND GET USER ACCOUNT            ************
     // ***********************************************************************************
 
-    let web3 = new Web3(ethereum);
+    web3 = new Web3(ethereum);
+    console.log(ethereum);
+    
+    //web3 = new Web3(new Web3.providers.WebsocketProvider(ethereum));
 
     // check that metamask is installed
     if(!isMetaMaskInstalled())
@@ -75,6 +93,10 @@ const initialize = async(network) => {
     ethereum.on('accountsChanged', (acc) => {
         currentAccount = web3.utils.toChecksumAddress(acc[0]);
         htm.currentUser.innerHTML = 'Current user: ' + currentAccount;
+        if( FlightSuretyApp !== null ){
+            //console.log('FlightSuretyApp = ', FlightSuretyApp);
+            refreshPurchasedInsurances();
+        }            
     });
 
     // ***********************************************************************************
@@ -85,7 +107,7 @@ const initialize = async(network) => {
     flightSuretyApp = new web3.eth.Contract(FlightSuretyApp.abi, config.appAddress);
     flightSuretyData = new web3.eth.Contract(FlightSuretyData.abi, config.dataAddress);
     flightSuretyData.methods.authorizeCaller(config.appAddress).send({from : currentAccount}).catch( (err) => {
-        console.log(`Error when trying to authorize flightSuretyApp at address ${config.address} to call flightSuretyData: `, err);
+        console.log(`Error when trying to authorize flightSuretyApp at address ${config.appAddress} to call flightSuretyData: `, err);
     });
     
     // ***********************************************************************************
@@ -116,7 +138,7 @@ const initialize = async(network) => {
     // htm.airlines.btnAssign
     htmAirlinesBtnAssign.onclick = async () => { 
         const idx = htm.airlines.namesMenu.selectedIndex;
-        console.log('idx = ', idx);
+        //console.log('idx = ', idx);
         const assignData = {
             address : currentAccount,
             iata    : airlinesDB[idx].iata 
@@ -153,8 +175,119 @@ const initialize = async(network) => {
         });     
     }
 
-    // ************               ASSIGNMENT OF NAMES TO AIRLINES             ************
+    // ***********************************************************************************
+    // ************                        INSURANCES                         ************
+    // ***********************************************************************************
 
+    // ************                     PURCHASE INSURANCE                    ************
+    
+    refreshPurchasedInsurances();
+
+    // when clicking on menu to select airline, update list of funded insurances
+    htm.insurance.airlinesMenu.onchange = () => {
+        refreshInsuranceFlightsMenu();
+    }
+
+    // purchase insurance
+    htm.insurance.btnBuy.onclick = () => {
+        // recover insurance amount
+        const amount = htm.insurance.amount.value;
+        const selectedAirline = htm.insurance.airlinesMenu.value; // address of selected airline
+        const selectedFlightTag = htm.insurance.flightsMenu.value; // selected flight code
+        console.log(`amount/airline/flightTag = ${amount}/${selectedAirline}/${selectedFlightTag}`);
+        const posSeparator = selectedFlightTag.indexOf("*");
+        if (posSeparator===-1)
+            return;
+        const selectedFlight = selectedFlightTag.substring(0,posSeparator);
+        const selectedTimestamp = selectedFlightTag.substring(posSeparator+1, selectedFlightTag.length);
+        console.log(`flight/timestamp = ${selectedFlight}/${selectedTimestamp}`);
+        
+        flightSuretyApp.methods.buy(selectedAirline, selectedFlight, selectedTimestamp)
+            .send({from : currentAccount, value : web3.utils.toWei(amount, 'ether')}).then( () =>{            
+            refreshPurchasedInsurances();
+        }).catch( err => {
+            console.log('error caught in promise: ', err.message);
+            window.alert('Could not purchase insurance');
+        });    
+    }
+
+    // check flight status
+    htm.insurance.btnCheckFlightStatus.onclick = () => {
+        // get airline, flight and timestamp
+        const selectedTag = htm.insurance.purchaseMenu.value;
+        const posFirstSeparator = selectedTag.indexOf("*");
+        const airline = selectedTag.substring(0,posFirstSeparator);
+        const posSecondSeparator = selectedTag.indexOf("*", posFirstSeparator+1);
+        const flight = selectedTag.substring(posFirstSeparator+1, posSecondSeparator);
+        const timestamp = selectedTag.substring(posSecondSeparator+1,selectedTag.length);
+        console.log(`airline/flight/timestamp =${airline}/${flight}/${timestamp}`);
+        // call oracles
+        flightSuretyApp.methods.fetchFlightStatus(airline,flight,web3.utils.toBN(timestamp)).send({from : currentAccount}).then( (res,err) => {            
+            console.log('->called oracles');            
+        }).catch( err => {
+            console.log('Error when calling oracle:', err);
+        }).then( (res,err) => {
+            // reflect the fact that one insurance might not be active anymore
+            refreshPurchasedInsurances();            
+        }).catch( err => {
+            console.log('Error when refereshing list of purchased insurnces:', err);
+        });
+    }
+
+    // capture event 
+    //flightSuretyApp.events.FlightStatusInfo({fromBlock: "latest"}, async function (error, event) {
+    flightSuretyApp.events.FlightStatusInfo({fromBlock: 0, toBlock: 'latest'}, function (error, event) {
+        if (error){
+            console.log(error);
+        }else{
+            // event FlightStatusInfo(address airline, string flight, uint256 timestamp, uint8 status);
+            const rv = event.returnValues;
+            const status = parseInt(rv.status);
+            const statusName = flightStatus(status);
+            console.log('Captured event:' + event.event);
+            console.log(`airline/flight/timestamp/status : ${rv.airline}/${rv.flight}/${rv.timestamp}/${status}`);
+            console.log(`blockNumber : ${event.blockNumber}`)
+            console.log(`statusName : ${statusName}`);            
+        }
+    });
+
+    flightSuretyApp.events.OracleRequest({fromBlock: "earliest"}, async function (error, event) {
+        if (error){
+          console.log(error);
+        }else{
+          const rv = event.returnValues;
+          const index = parseInt(rv.index);
+          console.log('Captured event :' + event.event);
+          console.log(`index/airline/flight/timestamp : ${index}/${rv.airline}/${rv.flight}/${rv.timestamp}`);
+        }
+    });
+
+    //btnUserCredit: document.getElementById('btnUserCredit'),
+    //    creditAmount: document.getElementById('creditAmount'),
+    htm.insurance.btnUserCredit.onclick = () => {
+        displayUserCredit();
+    };  
+    
+
+    htm.insurance.btnWithdraw.onclick = () => {
+        flightSuretyApp.methods.pay().send({from : currentAccount}).then( (res,err) => {
+            console.log('res = ', res);
+            displayUserCredit();
+        }).catch( err => {
+            console.log(`Error when calling pay for user ${currentAccount}: `, err);
+        });
+    }
+
+    
+
+    // flightSuretyApp.events.DebugEvent({}, async function (error, event) {
+    //     if (error){
+    //         console.log(error);
+    //     }else{
+    //         console.log('Captured event:' + event.event);            
+    //     }
+    // });
+    
     // ***********************************************************************************
     // ************               REPAIR INITIAL CAPABILITIES                 ************
     // ***********************************************************************************
@@ -179,8 +312,8 @@ const initialize = async(network) => {
 
 // returns airline status code as a string based the (string) status code returned by the smart contract
 function airlineStatus(statusCode){
-    console.log('statusCode = ', statusCode);
-    console.log('typeof(statusCode) = ', typeof(statusCode));
+    //console.log('statusCode = ', statusCode);
+    //console.log('typeof(statusCode) = ', typeof(statusCode));
     switch(parseInt(statusCode)) {
         case 0:
             return 'UNREGISTERED';
@@ -200,10 +333,39 @@ function airlineStatus(statusCode){
     }
 }
 
+// returns flight status code as a string based the (string) status code returned by the smart contract
+function flightStatus(statusCode){
+    console.log('statusCode = ', statusCode);
+    console.log('typeof(statusCode) = ', typeof(statusCode));
+    
+    switch(parseInt(statusCode)) {
+        case 0:
+            return 'UNKNOWN';
+            break;
+        case 10:
+            return 'ON_TIME';
+            break;
+        case 20:
+            return 'LATE_AIRLINE';
+            break;
+        case 30:
+            return 'LATE_WEATHER';
+            break;
+        case 40:
+            return 'LATE_TECHNICAL';
+            break;
+        case 50:
+            return 'LATE_OTHER';
+            break;
+        default:
+            error('Invalid status code ' + statusCode);
+            return '';
+    }
+}
 
 
 function display(title, description, results) {
-    let displayDiv = DOM.elid("display-wrapper");
+    let displayDiv = DOM.elid("sub-tmp");
     let section = DOM.section();
     section.appendChild(DOM.h2(title));
     section.appendChild(DOM.h5(description));
@@ -230,6 +392,8 @@ function refreshAirlinesStatus(){
                 console.log('status = ',status);
                 if(status.length !== airlines.length)
                     error('status.length !== airlines.length');
+                // re-initialize list of funded airlines
+                fundedAirlines = [];
                 for (let i=0; i < status.length; i++){
                     let entryName = '';
                     let entryIata = '';
@@ -237,15 +401,108 @@ function refreshAirlinesStatus(){
                         entryIata = airlinesIDs.get(airlines[i]);
                         entryName = airlinesDBMap.get(entryIata);
                     }
-                    tableRow += '<tr><td>' + airlines[i] + '</td><td>' + entryName + '</td><td>' + entryIata  + '</td><td>' + airlineStatus(status[i]) + '</td></tr>';                    
+                    tableRow += '<tr><td>' + airlines[i] + '</td><td>' + entryName + '</td><td>' + entryIata  + '</td><td>' + airlineStatus(status[i]) + '</td></tr>'; 
+                    // if this is a funded airlines, push its address
+                    if (status[i] === '30')
+                        fundedAirlines.push(airlines[i]);
                 }
                 htm.airlines.tableStatus.innerHTML = tableRow;
+                refreshInsuranceAirlinesMenu();
             });                                
         }else{
             console.log('error : ', err);
         }
+    });   
+};
+
+function refreshInsuranceFlightsMenu() {
+    let flightsMenu = '';
+    const selectedAirline = htm.insurance.airlinesMenu.value; // address of selected airline        
+    console.log('selectedAirline = ', selectedAirline);
+
+    if(airlinesIDs.has(selectedAirline)){
+        const selectedIata = airlinesIDs.get(selectedAirline); // IATA of selected airline
+        console.log('selectedIata = ', selectedIata);
+        // build menu items and create list of eligible flights
+        for(let entry of flightsDB){ // loop on all flights in DB
+            if( selectedIata.localeCompare(entry.airline.iata) === 0 ){ // match
+                const departureTime = entry.departure.scheduled.substring(0,10) + ' ' + entry.departure.scheduled.substring(11,16);
+                const arrivalTime = entry.arrival.scheduled.substring(0,10) + ' ' + entry.arrival.scheduled.substring(11,16);
+                const flightCode = entry.airline.iata + entry.flight.number;
+                const timestamp = (10000*parseInt(entry.departure.scheduled.substring(0,4))
+                    +100*parseInt(entry.departure.scheduled.substring(5,7))
+                    +parseInt(entry.departure.scheduled.substring(8,10))).toString();
+                console.log('timestamp = ', timestamp);
+                flightsMenu += '<option value = "' + flightCode + '*' + timestamp + '">'+ flightCode + '   ' +
+                    entry.departure.iata + '(' + departureTime + ') -> ' + entry.arrival.iata + '(' + arrivalTime + ')' + '</option>';
+            }
+        }            
+    }
+    htm.insurance.flightsMenu.innerHTML = flightsMenu;
+};
+
+function refreshInsuranceAirlinesMenu() {
+    let airlinesMenu = '';
+    for (let entry of fundedAirlines){
+        let iata='';
+        let name='';
+        if (airlinesIDs.has(entry)){
+            iata = airlinesIDs.get(entry);
+            name = airlinesDBMap.get(iata);
+            airlinesMenu += '<option value="' + entry + '">' + entry + ' (' + name + ' / ' + iata + ') </option>';
+        }else{
+            airlinesMenu += '<option value="' + entry + '">' + entry + '</option>';
+        }            
+    }
+    console.log('airlinesMenu = ', airlinesMenu);
+    htm.insurance.airlinesMenu.innerHTML = airlinesMenu;
+    refreshInsuranceFlightsMenu();
+}
+
+function refreshPurchasedInsurances(){ 
+    console.log('hello - refreshPurchasedInsurances');
+    let purchaseMenu='';       
+    flightSuretyApp.methods.getActiveInsuranceKeys().call({from:currentAccount}).then( (res,err) => {
+        if(!err){
+            const keys = res.activeInsuranceKeys;
+            console.log('keys = ',keys);
+            const nKeys = res.nActiveInsurances;
+            console.log('nKeys = ',nKeys);
+            let promiseVec = [];
+            for (let i=0; i<nKeys; i++) // loop on keys
+                promiseVec.push(flightSuretyApp.methods.getInsuranceData(keys[i]).call());
+            Promise.all(promiseVec).then(status => {
+                console.log('status = ',status);
+                if(status.length !== keys.length)
+                    error('status.length !== keys.length');
+                for (let i=0; i < status.length; i++){
+                    const insuranceAddress = status[i].airline;
+                    const insuranceFlight = status[i].flight;
+                    const timestamp = status[i].timestamp.toString();
+                    const tag = insuranceAddress + '*' + insuranceFlight + '*' + timestamp;
+                    purchaseMenu += '<option value="' + tag + '">' + insuranceAddress + ' - ' + insuranceFlight + ' - ' + 
+                        timestamp.substring(0,4) + '-' + timestamp.substring(4,6) + '-' + timestamp.substring(6,8) +'</option>';                    
+                }
+                htm.insurance.purchaseMenu.innerHTML = purchaseMenu;                
+            });                                
+        }else{
+            console.log('error : ', err);
+        }
+    });   
+};
+
+function displayUserCredit() {
+    flightSuretyApp.methods.getCredit().call({from:currentAccount}).then( (res,err) => {
+        console.log('res = ', res);
+        const amountETH = web3.utils.fromWei(res,'ether');
+        //const amountETH = res;
+        console.log('amountETH = ', amountETH);
+        console.log('typeof(amountETH) = ', typeof(amountETH));
+        htm.insurance.creditAmount.value = amountETH;
+        console.log('htm.insurance.creditAmount.value: ', htm.insurance.creditAmount.value);
+    }).catch( err => {
+        console.log(`Error when calling getCredit for user ${currentAccount}: `, err);
     });
-    
 };
 
 // get 'dataName' from the server

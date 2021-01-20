@@ -378,4 +378,57 @@ contract('Flight Surety Tests', async (accounts) => {
         assert.equal(ok, false, `Passenger should not be able to buy insurance for ${premium} ether` );
     });
 
+    it('Metadata of active flight insurances can be recovered', async () => {
+    
+        // ARRANGE
+        let firstFlight = 'AA001'; // Course number
+        let firstAirline = accounts[1];
+        let secondFlight = 'SN002'; // Course number
+        let secondAirline = accounts[2];
+        let timestamp = Math.floor(Date.now() / 1000);
+        let premium = 1.0;
+        let passenger = accounts[7];
+        
+    
+        // check that the first airline is funded
+        let isFirstAirlineFunded = await config.flightSuretyApp.isFundedAirline.call(firstAirline);
+        assert.equal(isFirstAirlineFunded, true, 'First airline should be funded');
+        // check that the second airline is funded     
+        isSecondAirlineFunded = await config.flightSuretyApp.isFundedAirline.call(secondAirline);
+        assert.equal(isSecondAirlineFunded, true, 'Second airline should be funded');
+    
+        // passenger buys insurance for 1 ether from 1st airline
+        await config.flightSuretyApp.buy(firstAirline, firstFlight, timestamp, {from: passenger, value: (premium*config.weiMultiple)});
+        let verifiedAmount = await config.flightSuretyApp.getInsurance(firstAirline, firstFlight, timestamp, {from: passenger});
+        assert.equal(verifiedAmount, premium*config.weiMultiple, 'Passenger could not pay insurance');
+    
+        // passenger buys insurance for 1 ether from 2nd airline
+        await config.flightSuretyApp.buy(secondAirline, secondFlight, timestamp, {from: passenger, value: (premium*config.weiMultiple)});
+        verifiedAmount = await config.flightSuretyApp.getInsurance(secondAirline, secondFlight, timestamp, {from: passenger});
+        assert.equal(verifiedAmount, premium*config.weiMultiple, 'Passenger could not pay insurance');
+    
+        // ACT
+        // recover keys of the 2 flights
+
+        tmp = await config.flightSuretyApp.getActiveInsuranceKeys.call({from:passenger});
+        //console.log('tmp = ', tmp);
+        let keys = tmp[0];
+        let numKeys = tmp[1].toNumber();
+        // there should be 3 keys, one from a previous test in chich an insurance was bought
+        assert.equal(numKeys, 3, "There should be 3 flight keys");
+
+        res1 = await config.flightSuretyApp.getInsuranceData.call(keys[1]);
+        res2 = await config.flightSuretyApp.getInsuranceData.call(keys[2]);
+        
+        // ASSERT
+        assert.equal(res1.airline.localeCompare(firstAirline), 0, `Airline in first insurance should be ${firstAirline}`);
+        assert.equal(res1.flight.localeCompare(firstFlight), 0, `Flight in first insurance should be ${firstFlight}`);
+        assert.equal(res1.timestamp.eq(web3.utils.toBN(timestamp)), true, `Timestamp in first insurance should be ${timestamp}`);
+
+        assert.equal(res2.airline.localeCompare(secondAirline), 0, `Airline in second insurance should be ${secondAirline}`);
+        assert.equal(res2.flight.localeCompare(secondFlight), 0, `Flight in second insurance should be ${secondFlight}`);
+        assert.equal(res2.timestamp.eq(web3.utils.toBN(timestamp)), true, `Timestamp in second insurance should be ${timestamp}`);
+        
+      });
+
 });

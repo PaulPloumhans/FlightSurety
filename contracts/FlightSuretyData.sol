@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity >= 0.6.2;
+pragma experimental ABIEncoderV2;
 
 import "../node_modules/@openzeppelin/contracts/math/SafeMath.sol";
 
@@ -20,20 +21,31 @@ contract FlightSuretyData {
     // (the registration is a prerequisite taken care of in the App contract)
     mapping(address => bool) private fundedAirlines;                    // funded (and thus also approved) airlines
 
-    // management of passenger insurance
-    // struct Insurance {        
-    //     address passenger;
-    //     uint256 amount;
-    // }
+    // data of passenger insurance
+    struct InsuranceData {        
+        address airline;
+        string flight;
+        uint256 timestamp;        
+    }
+    // record meta data of insurance in smart contract
+    // key = flight key, value = meta data
+    mapping(bytes32 => InsuranceData) private insuranceDataPerFlightKey; 
 
-    // store premia paid for insuraces
-    // first key = result of getFlightKey, second key is address of passenger
-    mapping(bytes32 => mapping(address => uint256)) private insurances;
+    // all keys ever used in a flight insurance
+    bytes32[] private allKeys;
 
-    // list of insurees, key = result of getFlightKey
-    mapping(bytes32 => address[]) private insurees;
+    // all insuree ever involved in a flight insurance
+    address[] private allInsurees;
 
-    // store credit of passengers
+    // store premia paid for insuraces by insuree (passenger)
+    // first key = result of getFlightKey, second key is address of insuree, value is premium
+    mapping(bytes32 => mapping(address => uint256)) private insurancesPerKey;
+
+    // store premia paid for insuraces by insuree (passenger)
+    // first key = address of insuress, second key is result of getFlightKey
+    //mapping(address => mapping(bytes32 => uint256)) private insurancesPerInsuree;
+
+    // store credit of passengers, key = address of insuree, value = credit due to insuree
     mapping(address => uint256) private credit;
 
     /********************************************************************************************/
@@ -124,7 +136,7 @@ contract FlightSuretyData {
     * @dev Buy insurance for a flight
     *
     */   
-    function buy (address airline, string memory flight, uint256 timestamp, address passenger)
+    function buy (address airline, string memory flight, uint256 timestamp, address insuree)
         external
         payable
         requireAuthorizedCaller
@@ -132,17 +144,30 @@ contract FlightSuretyData {
         // get flight key
         bytes32 key = getFlightKey(airline, flight, timestamp);
         // add insurance to insurances
-        require(insurances[key][passenger] == 0) ; // only one insurance allowed per passenger per flight
+        require(insurancesPerKey[key][insuree] == 0) ; // only one insurance allowed per passenger per flight
+        //require(insurancesPerInsuree[insuree][key] == 0);
+        // record insurance metadata
+        insuranceDataPerFlightKey[key] = InsuranceData({airline : airline, flight : flight, timestamp : timestamp}); // record meta data of insurance in smart contract
         // book insurance premium
-        insurances[key][passenger] = msg.value;
-        // add insuree to list
-        if (insurees[key].length == 0)
-            insurees[key] = new address[](0);
-        insurees[key].push(passenger);
+        insurancesPerKey[key][insuree] = msg.value;
+        //insurancesPerInsuree[key][insuree] = msg.value;
+        // add key to list of keys
+        uint256 i=0;
+        for(i=0; i<allKeys.length; i++)
+            if(allKeys[i]==key)
+                break;
+        if(i==allKeys.length) // first time this key appears
+            allKeys.push(key);
+        // add insuree to list of insurees
+        for(i=0; i<allInsurees.length; i++)
+            if(allInsurees[i]==insuree)
+                break;
+        if(i==allInsurees.length) // first time this key appears
+            allInsurees.push(insuree);        
     }
 
     /**
-     *  @dev Credits payouts to insurees whose insurace matches getFlightKey(airline, flight, timestamp)
+     *  @dev Credits payouts to insurees whose insurance matches getFlightKey(airline, flight, timestamp)
     */
     function creditInsurees (
         address airline,
@@ -157,18 +182,34 @@ contract FlightSuretyData {
         // get flight key
         bytes32 key = getFlightKey(airline, flight, timestamp);
         // loop on insurees
-        for (uint256 i=0; i < insurees[key].length; i++){
-            // address of passenger
-            address passenger = insurees[key][i];
+        for (uint256 i=0; i<allInsurees.length; i++){
+            // address of insuree
+            address insuree = allInsurees[i];
             // multiply paid premium by payOff
-            uint256 payout = (insurances[key][passenger]).mul(payOffNumerator).div(payOffDenominator);
+            uint256 payout = (insurancesPerKey[key][insuree]).mul(payOffNumerator).div(payOffDenominator);
             // set insured amount for flight to 0
-            delete insurances[key][passenger];
-            // update passenger credit
-            credit[passenger] = credit[passenger].add(payout);
+            insurancesPerKey[key][insuree] = 0;
+            //insurancesPerInsuree[insuree][key] = 0;
+            // update insuree credit
+            credit[insuree] = credit[insuree].add(payout);
+        }                    
+    }
+
+    /**
+     *  @dev Transfers passengers paid premia to insurance definitely (because flight was not delayed due to an airline fault)
+     *
+    */
+    function terminateInsurance(address airline, string memory flight, uint256 timestamp) external requireAuthorizedCaller{
+        // get flight key
+        bytes32 key = getFlightKey(airline, flight, timestamp);
+        // loop on insurees
+        for (uint256 i=0; i<allInsurees.length; i++){
+            // address of insuree
+            address insuree = allInsurees[i];
+            // set insured amount for flight to 0
+            insurancesPerKey[key][insuree] = 0;
+            //insurancesPerInsuree[insuree][key] = 0;
         }        
-        // delete insurees for this times key
-        delete insurees[key];        
     }
 
     /**
@@ -196,8 +237,52 @@ contract FlightSuretyData {
     function getInsurance(address passenger, address airline, string memory flight, uint256 timestamp) view external requireAuthorizedCaller returns(uint256){
         // get flight key
         bytes32 key = getFlightKey(airline, flight, timestamp);
-        return insurances[key][passenger];
+        return insurancesPerKey[key][passenger];
     }
+
+    /**
+     *  @dev Returns list of active insurances' keys for a given passenger
+     *
+    */
+    function getActiveInsuranceKeys(address insuree)
+        view
+        external
+        requireAuthorizedCaller
+        returns(bytes32[] memory activeInsuranceKeys, uint256 nActiveInsurances)
+    {
+        nActiveInsurances = 0;
+
+        // find number of active insurances of current passenger
+        for (uint256 i=0; i<allKeys.length; i++){
+            bytes32 key = allKeys[i];
+            if(insurancesPerKey[key][insuree] != 0){ // active insurance
+                nActiveInsurances++;
+            }
+        }
+
+        activeInsuranceKeys = new bytes32[](nActiveInsurances);
+        uint256 idx = 0;
+        for (uint256 i=0; i<allKeys.length; i++){
+            bytes32 key = allKeys[i];
+            if(insurancesPerKey[key][insuree] != 0){ // active insurance
+                activeInsuranceKeys[idx] = key;
+                idx++;
+            }
+        }
+        // we need to return the num of active insurances, otherwise too much is returned
+        // if an insurance is removed before another is added
+        return (activeInsuranceKeys, nActiveInsurances);
+    }
+
+    /**
+     *  @dev Returns insurance data for a given key
+     *
+    */
+    function getInsuranceData(bytes32 key) view external requireAuthorizedCaller returns(address airline, string memory flight, uint256 timestamp){
+        InsuranceData memory data = insuranceDataPerFlightKey[key];
+        return (data.airline, data.flight, data.timestamp);
+    }
+
 
     function getFlightKey(address airline, string memory flight, uint256 timestamp)
         pure

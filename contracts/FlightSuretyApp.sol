@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 
 pragma solidity >= 0.6.2;
+pragma experimental ABIEncoderV2;
 
 // It's important to avoid vulnerabilities due to numeric overflow bugs
 // OpenZeppelin's SafeMath library, when used correctly, protects agains such bugs
@@ -62,9 +63,9 @@ contract FlightSuretyApp {
     // number of funded arilines
 
     // mapping of airlines in the process of being registered
-    mapping(address => address[]) private mapQueueAirlines;    
+    mapping(address => address[]) private mapQueueAirlines;   
     
-    /* ******************************* Management of contract ************************************/
+    /* ******************************* Management of contract ***********************************/
     bool private operational = true;
     FlightSuretyData private flightSuretyData;
     bool private firstTime = true; // used to check that registerFirstAirline is only called once
@@ -311,7 +312,9 @@ contract FlightSuretyApp {
         //   if statusCode == STATUS_CODE_LATE_AIRLINE -> creditInsurees
         //   else transfer premium to insurance
         if (statusCode == STATUS_CODE_LATE_AIRLINE) 
-            flightSuretyData.creditInsurees (airline, flight, timestamp, 3, 2);        
+            flightSuretyData.creditInsurees(airline, flight, timestamp, 3, 2);
+        else
+            flightSuretyData.terminateInsurance(airline, flight, timestamp);   
     }
 
     // Generate a request for oracles to fetch flight information - triggered from UI
@@ -369,19 +372,35 @@ contract FlightSuretyApp {
     function getInsurance(address airline, string memory flight, uint256 timestamp) view external returns(uint256) {
         return flightSuretyData.getInsurance(msg.sender, airline, flight, timestamp);
     }
+
+    /**
+     *  @dev Returns list of active insurances' metadata for a given passenger
+     *
+    */
+    function getActiveInsuranceKeys() view external returns(bytes32[] memory activeInsuranceKeys, uint256 nActiveInsurances){
+        return flightSuretyData.getActiveInsuranceKeys(msg.sender);
+    }
     
+    /**
+     *  @dev Returns list of active insurances' metadata for a given passenger
+     *
+    */
+    function getInsuranceData(bytes32 key) view external returns(address airline, string memory flight, uint256 timestamp){
+        return flightSuretyData.getInsuranceData(key);
+    }
+
 // end region
 
 // region ORACLE MANAGEMENT
 
     // Incremented to add pseudo-randomness at various points
-    uint8 private nonce = 0;    
+    uint8 private nonce = 250;    
 
     // Fee to be paid when registering oracle
     uint256 public constant REGISTRATION_FEE = 1 ether;
 
     // Number of oracles that must respond for valid status
-    uint256 private constant MIN_RESPONSES = 3;
+    uint256 private constant MIN_RESPONSES = 1;
 
 
     struct Oracle {
@@ -414,6 +433,8 @@ contract FlightSuretyApp {
     // Oracles track this and if they have a matching index
     // they fetch data and submit a response
     event OracleRequest(uint8 index, address airline, string flight, uint256 timestamp);
+
+    event DebugEvent(uint256 length);
 
     // Register an oracle with the contract
     function registerOracle() external payable {
@@ -452,11 +473,18 @@ contract FlightSuretyApp {
 
         // Information isn't considered verified until at least MIN_RESPONSES
         // oracles respond with the *** same *** information
+
         emit OracleReport(airline, flight, timestamp, statusCode);
+        // tmp for debug
+        uint256 len = oracleResponses[key].responses[statusCode].length;
+        emit DebugEvent(len);
+
         if (oracleResponses[key].responses[statusCode].length >= MIN_RESPONSES) {
             emit FlightStatusInfo(airline, flight, timestamp, statusCode);
             // Handle flight status as appropriate
             processFlightStatus(airline, flight, timestamp, statusCode);
+            // mark Oracle as closed
+            oracleResponses[key].isOpen = false;
         }
     }
     
@@ -484,13 +512,13 @@ contract FlightSuretyApp {
 
         uint8 maxValue = 10;
 
-        // Pseudo random number...the incrementing nonce adds variation
-        uint8 random = uint8(uint256(keccak256(abi.encodePacked(blockhash(block.number - nonce++), account))) % maxValue);
-
-        if (nonce > 250) {
-            nonce = 0;  // Can only fetch blockhashes for last 256 blocks so we adapt
+        if (nonce<1) {
+            nonce = 250;  // Can only fetch blockhashes for last 256 blocks so we adapt
         }
-
+        // Pseudo random number...the decreasing nonce adds variation
+        uint8 random = uint8(uint256(keccak256(abi.encodePacked(blockhash(block.number - nonce--), account))) % maxValue);
+        
+        
         return random;
     }
 

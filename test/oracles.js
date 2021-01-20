@@ -174,6 +174,8 @@ contract('Oracles', async (accounts) => {
       +` == balance before + transaction gas cost (${expectedBalanceAfter.toString()}).`);
   });
 
+  
+
 
  
 });
