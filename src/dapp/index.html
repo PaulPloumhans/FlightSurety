@@ -40,8 +40,8 @@
         <div class="container-fluid">
             <ul class="nav navbar-nav">
                 <li><a class="nav-link" href="#airlines">Airlines</a></li>
-                <li><a class="nav-link" href="#insurance">Insurance</a></li>
-                <li><a class="nav-link" href="#display-wrapper">Admin</a></li>
+                <li><a class="nav-link" href="#insurance">Insurances</a></li>
+                <li><a class="nav-link" href="#admin">Admin</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
@@ -60,7 +60,7 @@
         <div class="row top-20" id="airlines">
             <div class="col-10 container">
                 <h1>Airlines</h1>
-                    <h4>Match airline name with current user address (optional)</h4>
+                    <h4>Match airline name with current user address (required to select flights)</h4>
                         <form>
                             <div class="row top-20 bottom-20">
                                 <div class="col-3">
@@ -120,7 +120,7 @@
 
         <div class="row top-20" id="insurance">
             <div class="col-10 container">
-                <h1>Insurance</h1>
+                <h1>Insurances</h1>
                     <h4>Purchase insurance</h4>
                         <form>
                             <div class="row top-20 bottom-20">
@@ -141,7 +141,7 @@
                             </div>
                             <div class="row top-20 bottom-20">
                                 <div class="col-3">
-                                    Enter amount insured for current user (in ETH)
+                                    Enter amount insured for current user (in ETH, max 1 ETH)
                                 </div>
                                 <div class="col-4">
                                     <input type="text" class="form-control" id="insuranceAmount"></input>                            
@@ -155,7 +155,7 @@
                         <form>
                             <div class="row top-20 bottom-20">
                                 <div class="col-3">
-                                    Select purchased insurance of current user
+                                    Select active insurance of current user
                                 </div>
                                 <div class="col-6">
                                     <select class="form-select" id="insurancePurchasedMenu"></select>                            
@@ -166,10 +166,8 @@
                                 <div class="col-3">
                                     <button type="button" class="btn btn-primary" id="insuranceCheckFlightStatus">Check flight status</button>
                                 </div>
-                                <div class="col-3">
-                                    <ul class="list-group">
-                                        <li class="list-group-item" id="flightStatus">TBD</li>
-                                    </ul>
+                                <div class="col-6">
+                                    <input type="text" class="form-control" id="flightStatus" readonly></input>                                     
                                 </div>
                             </div>
                             <div class="row top-20 bottom-20">
@@ -190,10 +188,24 @@
             </div>
         </div>
 
-        <div class="row top-20" id="display-wrapper">
+        <div class="row top-20" id="admin">
             <div class="col-10 container" id="sub-tmp">
-                <h1>Old stuff</h1>
-                <label class="form">Flight</label> <input type="text" id="flight-number"> <btn class="btn btn-primary" id="submit-oracle">Submit to Oracles</btn>
+                <h1>Admin</h1>
+                    <form>
+                        <div class="row top-20 bottom-20">
+                            <div class="col-3">
+                                <button type="button" class="btn btn-primary" id="btnCheckStatus">Check contracts status</button>
+                            </div>
+                        </div>
+                        <div class="row top-20 bottom-20">
+                            <div class="col-3">
+                                FlightSuretyApp is operational
+                            </div>
+                            <div class="col-3">
+                                <input type="text" class="form-control" id="flightSuretyAppStatus" readonly></input>               
+                            </div>                                                                                            
+                        </div>                                            
+                    </form>    
             </div>
         </div>
         

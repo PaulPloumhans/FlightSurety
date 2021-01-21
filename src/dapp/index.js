@@ -20,7 +20,7 @@ var htm = {
         btnFund : document.getElementById('btnAirlineFund'),        
     },
     insurance : {
-        airlinesMenu: document.getElementById('insuranceAirlinesMenu'),        
+        airlinesMenu: document.getElementById('insuranceAirlinesMenu'),    
         flightsMenu: document.getElementById('insuranceFlightsMenu'),
         amount: document.getElementById('insuranceAmount'),
         btnBuy: document.getElementById('btnInsuranceBuy'),
@@ -29,6 +29,11 @@ var htm = {
         btnUserCredit: document.getElementById('btnUserCredit'),
         creditAmount: document.getElementById('creditAmount'),
         btnWithdraw : document.getElementById('btnWithdraw'),
+        flightStatus : document.getElementById('flightStatus'),
+    },
+    admin : {
+        btnCheckStatus: document.getElementById('btnCheckStatus'),
+        flightSuretyAppStatus: document.getElementById('flightSuretyAppStatus'),
     }
 };
 // move this back into htm at some point...
@@ -170,8 +175,7 @@ const initialize = async(network) => {
         flightSuretyApp.methods.fund().send({from : currentAccount, value : web3.utils.toWei(htm.airlines.amountToFund.value, 'ether')}).then( () =>{
             refreshAirlinesStatus();
         }).catch( err => {
-            console.log('error caught in promise: ', err.message);
-            window.alert('Could not fund airline '+ currentAccount);
+            console.log('error caught in promise: ', err.message);            
         });     
     }
 
@@ -215,28 +219,33 @@ const initialize = async(network) => {
     htm.insurance.btnCheckFlightStatus.onclick = () => {
         // get airline, flight and timestamp
         const selectedTag = htm.insurance.purchaseMenu.value;
-        const posFirstSeparator = selectedTag.indexOf("*");
-        const airline = selectedTag.substring(0,posFirstSeparator);
-        const posSecondSeparator = selectedTag.indexOf("*", posFirstSeparator+1);
-        const flight = selectedTag.substring(posFirstSeparator+1, posSecondSeparator);
-        const timestamp = selectedTag.substring(posSecondSeparator+1,selectedTag.length);
-        console.log(`airline/flight/timestamp =${airline}/${flight}/${timestamp}`);
-        // call oracles
-        flightSuretyApp.methods.fetchFlightStatus(airline,flight,web3.utils.toBN(timestamp)).send({from : currentAccount}).then( (res,err) => {            
-            console.log('->called oracles');            
-        }).catch( err => {
-            console.log('Error when calling oracle:', err);
-        }).then( (res,err) => {
-            // reflect the fact that one insurance might not be active anymore
-            refreshPurchasedInsurances();            
-        }).catch( err => {
-            console.log('Error when refereshing list of purchased insurnces:', err);
-        });
+        if(selectedTag===""){
+            alert('No insurance to check');
+        }else{
+            const posFirstSeparator = selectedTag.indexOf("*");
+            const airline = selectedTag.substring(0,posFirstSeparator);
+            const posSecondSeparator = selectedTag.indexOf("*", posFirstSeparator+1);
+            const flight = selectedTag.substring(posFirstSeparator+1, posSecondSeparator);
+            const timestamp = selectedTag.substring(posSecondSeparator+1,selectedTag.length);
+            console.log(`airline/flight/timestamp =${airline}/${flight}/${timestamp}`);
+            // call oracles
+            flightSuretyApp.methods.fetchFlightStatus(airline,flight,web3.utils.toBN(timestamp)).send({from : currentAccount}).then( (res,err) => {            
+                console.log('->called oracles');            
+            }).catch( err => {
+                console.log('Error when calling oracle:', err);
+            }).then( (res,err) => {
+                // reflect the fact that one insurance might not be active anymore
+                refreshPurchasedInsurances();            
+            }).catch( err => {
+                console.log('Error when refereshing list of purchased insurnces:', err);
+            });
+        }        
     }
 
     // capture event 
-    //flightSuretyApp.events.FlightStatusInfo({fromBlock: "latest"}, async function (error, event) {
-    flightSuretyApp.events.FlightStatusInfo({fromBlock: 0, toBlock: 'latest'}, function (error, event) {
+    console.log('Set code for FlightStatusInfo capture');
+    htm.insurance.flightStatus.value = '';
+    flightSuretyApp.events.FlightStatusInfo({fromBlock: 'latest'}, (error, event) => {
         if (error){
             console.log(error);
         }else{
@@ -244,14 +253,19 @@ const initialize = async(network) => {
             const rv = event.returnValues;
             const status = parseInt(rv.status);
             const statusName = flightStatus(status);
+            htm.insurance.flightStatus.value = statusName + '  ( ' + rv.airline + ' - ' + rv.flight + ' - ' +
+                rv.timestamp.substring(0,4) + '-' + rv.timestamp.substring(5,6) + rv.timestamp.substring(7,8) + ' )';
+
             console.log('Captured event:' + event.event);
             console.log(`airline/flight/timestamp/status : ${rv.airline}/${rv.flight}/${rv.timestamp}/${status}`);
             console.log(`blockNumber : ${event.blockNumber}`)
-            console.log(`statusName : ${statusName}`);            
+            console.log(`statusName : ${statusName}`);
+
         }
     });
 
-    flightSuretyApp.events.OracleRequest({fromBlock: "earliest"}, async function (error, event) {
+    console.log('Set code for OracleRequest capture');
+    flightSuretyApp.events.OracleRequest({fromBlock: 'latest'}, (error, event) => {
         if (error){
           console.log(error);
         }else{
@@ -262,13 +276,11 @@ const initialize = async(network) => {
         }
     });
 
-    //btnUserCredit: document.getElementById('btnUserCredit'),
-    //    creditAmount: document.getElementById('creditAmount'),
+    htm.insurance.creditAmount.value = '';
     htm.insurance.btnUserCredit.onclick = () => {
         displayUserCredit();
     };  
     
-
     htm.insurance.btnWithdraw.onclick = () => {
         flightSuretyApp.methods.pay().send({from : currentAccount}).then( (res,err) => {
             console.log('res = ', res);
@@ -276,39 +288,42 @@ const initialize = async(network) => {
         }).catch( err => {
             console.log(`Error when calling pay for user ${currentAccount}: `, err);
         });
-    }
+    }    
 
-    
-
-    // flightSuretyApp.events.DebugEvent({}, async function (error, event) {
-    //     if (error){
-    //         console.log(error);
-    //     }else{
-    //         console.log('Captured event:' + event.event);            
-    //     }
-    // });
-    
     // ***********************************************************************************
-    // ************               REPAIR INITIAL CAPABILITIES                 ************
+    // ************                          ADMIN                            ************
     // ***********************************************************************************
 
     flightSuretyApp.methods.isOperational().call().then( (res,err) => {
-        console.log('res = ', res);
-        display('Operational Status', 'Check if contract is operational', [ { label: 'Operational Status', error: err, value: res} ]);
+        console.log('flightSuretyApp.methods.isOperational() = ', res);
+        htm.admin.flightSuretyAppStatus.value = res; 
     });
 
-    DOM.elid('submit-oracle').addEventListener('click', () => {
-        let flight = DOM.elid('flight-number').value;
-        // Write transaction
-        let airline = accounts[0];
-        console.log('fetching flight status...');
-        flightSuretyApp.methods.fetchFlightStatus(airline,flight,Math.floor(Date.now() / 1000)).send({from : currentAccount}).then( (res,err) => {
-            display('Oracles', 'Trigger oracles', [ { label: 'Fetch Flight Status', error: err, value: res.flight + ' ' + res.timestamp} ]);
-            console.log('...done');
+    htm.admin.btnCheckStatus.onclick = () => {
+        flightSuretyApp.methods.isOperational().call().then( (res,err) => {
+            console.log('flightSuretyApp.methods.isOperational() = ', res);
+            htm.admin.flightSuretyAppStatus.value = res;
         });
-    });   
+    };
+}
+
+
+
+function display(title, description, results) {
+    let displayDiv = DOM.elid("sub-tmp");
+    let section = DOM.section();
+    section.appendChild(DOM.h2(title));
+    section.appendChild(DOM.h5(description));
+    results.map((result) => {
+        let row = section.appendChild(DOM.div({className:'row'}));
+        row.appendChild(DOM.div({className: 'col-sm-4 field'}, result.label));
+        row.appendChild(DOM.div({className: 'col-sm-8 field-value'}, result.error ? String(result.error) : String(result.value)));
+        section.appendChild(row);
+    })
+    displayDiv.append(section);
 
 }
+
 
 // returns airline status code as a string based the (string) status code returned by the smart contract
 function airlineStatus(statusCode){
@@ -361,22 +376,6 @@ function flightStatus(statusCode){
             error('Invalid status code ' + statusCode);
             return '';
     }
-}
-
-
-function display(title, description, results) {
-    let displayDiv = DOM.elid("sub-tmp");
-    let section = DOM.section();
-    section.appendChild(DOM.h2(title));
-    section.appendChild(DOM.h5(description));
-    results.map((result) => {
-        let row = section.appendChild(DOM.div({className:'row'}));
-        row.appendChild(DOM.div({className: 'col-sm-4 field'}, result.label));
-        row.appendChild(DOM.div({className: 'col-sm-8 field-value'}, result.error ? String(result.error) : String(result.value)));
-        section.appendChild(row);
-    })
-    displayDiv.append(section);
-
 }
 
 function refreshAirlinesStatus(){ 
@@ -558,7 +557,9 @@ async function serverGetMapJSON(dataName) {
     }
 }
 
-window.addEventListener('DOMContentLoaded', initialize('localhost'));
+//window.addEventListener('DOMContentLoaded', initialize('localhost'));
+
+initialize('localhost');
 
 
 
