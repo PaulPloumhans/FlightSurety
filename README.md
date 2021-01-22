@@ -35,6 +35,7 @@ To run truffle tests:
 
 Wait for the message
 >FlightSuretyServer now listening at http://localhost:3000
+
 before starting the dApp
 
 ## Start the dApp
@@ -56,9 +57,9 @@ Key elements for using the dApp:
 
 ## dApp screenshots
 
-![alt text](./img/UIAirlines.jpg "UI")
+![alt text](./img/UIAirlines.JPG "UI")
 
-![alt text](./img/UIInsurances.jpg "UI")
+![alt text](./img/UIInsurances.JPG "UI")
 
 ## Resources
 
