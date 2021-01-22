@@ -16,7 +16,7 @@ This repository contains Smart Contract code in Solidity (using Truffle), tests 
 
 `npm install -g truffle`
 
-- Launch Ganache with at least 30 accounts.
+- Launch Ganache with at least 40 accounts.
 
 - Deploy contracts to Ganache.
 
