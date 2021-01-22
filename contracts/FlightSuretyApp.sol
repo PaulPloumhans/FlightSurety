@@ -308,10 +308,9 @@ contract FlightSuretyApp {
     function processFlightStatus(address airline, string memory flight, uint256 timestamp, uint8 statusCode)
         private 
     {
-        // loop on insurances and if theres one that match
-        //   if statusCode == STATUS_CODE_LATE_AIRLINE -> creditInsurees
-        //   else transfer premium to insurance
-        if (statusCode == STATUS_CODE_LATE_AIRLINE) 
+        if (statusCode == STATUS_CODE_UNKNOWN)
+            return;
+        else if (statusCode == STATUS_CODE_LATE_AIRLINE) 
             flightSuretyData.creditInsurees(airline, flight, timestamp, 3, 2);
         else
             flightSuretyData.terminateInsurance(airline, flight, timestamp);   
@@ -321,12 +320,18 @@ contract FlightSuretyApp {
     function fetchFlightStatus(address airline, string memory flight, uint256 timestamp) external
     {
         uint8 index = getRandomIndex(msg.sender);
-
         // Generate a unique key for storing the request
         bytes32 key = keccak256(abi.encodePacked(index, airline, flight, timestamp));
         ResponseInfo storage newResponseInfo = oracleResponses[key];
         newResponseInfo.requester = msg.sender;
         newResponseInfo.isOpen = true;
+        // delete to make sure the result of an earlier call to fetchFlightStatus has no effect
+        delete newResponseInfo.responses[STATUS_CODE_UNKNOWN];
+        delete newResponseInfo.responses[STATUS_CODE_ON_TIME];
+        delete newResponseInfo.responses[STATUS_CODE_LATE_AIRLINE];
+        delete newResponseInfo.responses[STATUS_CODE_LATE_WEATHER];
+        delete newResponseInfo.responses[STATUS_CODE_LATE_TECHNICAL];
+        delete newResponseInfo.responses[STATUS_CODE_LATE_OTHER];
 
         emit OracleRequest(index, airline, flight, timestamp);
     } 
@@ -400,7 +405,7 @@ contract FlightSuretyApp {
     uint256 public constant REGISTRATION_FEE = 1 ether;
 
     // Number of oracles that must respond for valid status
-    uint256 private constant MIN_RESPONSES = 1;
+    uint256 private constant MIN_RESPONSES = 3;
 
 
     struct Oracle {
@@ -433,8 +438,6 @@ contract FlightSuretyApp {
     // Oracles track this and if they have a matching index
     // they fetch data and submit a response
     event OracleRequest(uint8 index, address airline, string flight, uint256 timestamp);
-
-    event DebugEvent(uint256 length);
 
     // Register an oracle with the contract
     function registerOracle() external payable {
@@ -475,10 +478,7 @@ contract FlightSuretyApp {
         // oracles respond with the *** same *** information
 
         emit OracleReport(airline, flight, timestamp, statusCode);
-        // tmp for debug
-        uint256 len = oracleResponses[key].responses[statusCode].length;
-        emit DebugEvent(len);
-
+        
         if (oracleResponses[key].responses[statusCode].length >= MIN_RESPONSES) {
             emit FlightStatusInfo(airline, flight, timestamp, statusCode);
             // Handle flight status as appropriate

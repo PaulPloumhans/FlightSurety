@@ -17,7 +17,8 @@ var htm = {
         addressToRegister : document.getElementById('airlineAddressToRegister'),
         btnRegister : document.getElementById('btnAirlineRegister'),
         amountToFund : document.getElementById('airlineAmountToFund'),
-        btnFund : document.getElementById('btnAirlineFund'),        
+        btnFund : document.getElementById('btnAirlineFund'),    
+        btnAssign : document.getElementById('btnAirlineAssignName')
     },
     insurance : {
         airlinesMenu: document.getElementById('insuranceAirlinesMenu'),    
@@ -30,14 +31,14 @@ var htm = {
         creditAmount: document.getElementById('creditAmount'),
         btnWithdraw : document.getElementById('btnWithdraw'),
         flightStatus : document.getElementById('flightStatus'),
+        spinnerStatus : document.getElementById('spinnerStatus'),
     },
     admin : {
         btnCheckStatus: document.getElementById('btnCheckStatus'),
         flightSuretyAppStatus: document.getElementById('flightSuretyAppStatus'),
     }
 };
-// move this back into htm at some point...
-const htmAirlinesBtnAssign = document.getElementById('btnAirlineAssignName');
+htm.insurance.spinnerStatus.style.display = 'none';
 
 // Dapp
 let flightSuretyApp = null;
@@ -72,7 +73,6 @@ const initialize = async(network) => {
     // ***********************************************************************************
 
     web3 = new Web3(ethereum);
-    console.log(ethereum);
     
     //web3 = new Web3(new Web3.providers.WebsocketProvider(ethereum));
 
@@ -99,7 +99,6 @@ const initialize = async(network) => {
         currentAccount = web3.utils.toChecksumAddress(acc[0]);
         htm.currentUser.innerHTML = 'Current user: ' + currentAccount;
         if( FlightSuretyApp !== null ){
-            //console.log('FlightSuretyApp = ', FlightSuretyApp);
             refreshPurchasedInsurances();
         }            
     });
@@ -133,7 +132,6 @@ const initialize = async(network) => {
     for (let entry of airlinesDB){
         airlinesNamesMenu += '<option>' + entry.name + ' (' + entry.iata + ') </option>';
     }
-    //console.log('airlinesNamesMenu = ', airlinesNamesMenu);
     htm.airlines.namesMenu.innerHTML = airlinesNamesMenu;
  
     // load airlinesIDs from server and refresh status
@@ -141,9 +139,8 @@ const initialize = async(network) => {
     refreshAirlinesStatus();
 
     // htm.airlines.btnAssign
-    htmAirlinesBtnAssign.onclick = async () => { 
+    htm.airlines.btnAssign.onclick = async () => { 
         const idx = htm.airlines.namesMenu.selectedIndex;
-        //console.log('idx = ', idx);
         const assignData = {
             address : currentAccount,
             iata    : airlinesDB[idx].iata 
@@ -198,13 +195,11 @@ const initialize = async(network) => {
         const amount = htm.insurance.amount.value;
         const selectedAirline = htm.insurance.airlinesMenu.value; // address of selected airline
         const selectedFlightTag = htm.insurance.flightsMenu.value; // selected flight code
-        console.log(`amount/airline/flightTag = ${amount}/${selectedAirline}/${selectedFlightTag}`);
         const posSeparator = selectedFlightTag.indexOf("*");
         if (posSeparator===-1)
             return;
         const selectedFlight = selectedFlightTag.substring(0,posSeparator);
         const selectedTimestamp = selectedFlightTag.substring(posSeparator+1, selectedFlightTag.length);
-        console.log(`flight/timestamp = ${selectedFlight}/${selectedTimestamp}`);
         
         flightSuretyApp.methods.buy(selectedAirline, selectedFlight, selectedTimestamp)
             .send({from : currentAccount, value : web3.utils.toWei(amount, 'ether')}).then( () =>{            
@@ -220,17 +215,20 @@ const initialize = async(network) => {
         // get airline, flight and timestamp
         const selectedTag = htm.insurance.purchaseMenu.value;
         if(selectedTag===""){
-            alert('No insurance to check');
+            alert('No active insurance to check');
         }else{
+            // empty status value
+            htm.insurance.flightStatus.value = '';
+            // show spinner
+            htm.insurance.spinnerStatus.style.display = '';
             const posFirstSeparator = selectedTag.indexOf("*");
             const airline = selectedTag.substring(0,posFirstSeparator);
             const posSecondSeparator = selectedTag.indexOf("*", posFirstSeparator+1);
             const flight = selectedTag.substring(posFirstSeparator+1, posSecondSeparator);
             const timestamp = selectedTag.substring(posSecondSeparator+1,selectedTag.length);
-            console.log(`airline/flight/timestamp =${airline}/${flight}/${timestamp}`);
             // call oracles
             flightSuretyApp.methods.fetchFlightStatus(airline,flight,web3.utils.toBN(timestamp)).send({from : currentAccount}).then( (res,err) => {            
-                console.log('->called oracles');            
+                // console.log('->called oracles');            
             }).catch( err => {
                 console.log('Error when calling oracle:', err);
             }).then( (res,err) => {
@@ -249,30 +247,26 @@ const initialize = async(network) => {
         if (error){
             console.log(error);
         }else{
-            // event FlightStatusInfo(address airline, string flight, uint256 timestamp, uint8 status);
+            // show spinner
+            htm.insurance.spinnerStatus.style.display = 'none';
+            console.log('Event FlightStatusInfo captured');
             const rv = event.returnValues;
             const status = parseInt(rv.status);
             const statusName = flightStatus(status);
             htm.insurance.flightStatus.value = statusName + '  ( ' + rv.airline + ' - ' + rv.flight + ' - ' +
                 rv.timestamp.substring(0,4) + '-' + rv.timestamp.substring(5,6) + rv.timestamp.substring(7,8) + ' )';
-
-            console.log('Captured event:' + event.event);
-            console.log(`airline/flight/timestamp/status : ${rv.airline}/${rv.flight}/${rv.timestamp}/${status}`);
-            console.log(`blockNumber : ${event.blockNumber}`)
-            console.log(`statusName : ${statusName}`);
-
+            refreshPurchasedInsurances();
         }
     });
 
     console.log('Set code for OracleRequest capture');
     flightSuretyApp.events.OracleRequest({fromBlock: 'latest'}, (error, event) => {
         if (error){
-          console.log(error);
+            console.log(error);
         }else{
-          const rv = event.returnValues;
-          const index = parseInt(rv.index);
-          console.log('Captured event :' + event.event);
-          console.log(`index/airline/flight/timestamp : ${index}/${rv.airline}/${rv.flight}/${rv.timestamp}`);
+            console.log('Event OracleRequest captured');
+            const rv = event.returnValues;
+            const index = parseInt(rv.index);          
         }
     });
 
@@ -283,47 +277,27 @@ const initialize = async(network) => {
     
     htm.insurance.btnWithdraw.onclick = () => {
         flightSuretyApp.methods.pay().send({from : currentAccount}).then( (res,err) => {
-            console.log('res = ', res);
             displayUserCredit();
         }).catch( err => {
             console.log(`Error when calling pay for user ${currentAccount}: `, err);
         });
     }    
+    console.log('-> ', htm.insurance.spinnerStatus.style);
 
     // ***********************************************************************************
     // ************                          ADMIN                            ************
     // ***********************************************************************************
 
     flightSuretyApp.methods.isOperational().call().then( (res,err) => {
-        console.log('flightSuretyApp.methods.isOperational() = ', res);
         htm.admin.flightSuretyAppStatus.value = res; 
     });
 
     htm.admin.btnCheckStatus.onclick = () => {
         flightSuretyApp.methods.isOperational().call().then( (res,err) => {
-            console.log('flightSuretyApp.methods.isOperational() = ', res);
             htm.admin.flightSuretyAppStatus.value = res;
         });
     };
 }
-
-
-
-function display(title, description, results) {
-    let displayDiv = DOM.elid("sub-tmp");
-    let section = DOM.section();
-    section.appendChild(DOM.h2(title));
-    section.appendChild(DOM.h5(description));
-    results.map((result) => {
-        let row = section.appendChild(DOM.div({className:'row'}));
-        row.appendChild(DOM.div({className: 'col-sm-4 field'}, result.label));
-        row.appendChild(DOM.div({className: 'col-sm-8 field-value'}, result.error ? String(result.error) : String(result.value)));
-        section.appendChild(row);
-    })
-    displayDiv.append(section);
-
-}
-
 
 // returns airline status code as a string based the (string) status code returned by the smart contract
 function airlineStatus(statusCode){
@@ -350,8 +324,8 @@ function airlineStatus(statusCode){
 
 // returns flight status code as a string based the (string) status code returned by the smart contract
 function flightStatus(statusCode){
-    console.log('statusCode = ', statusCode);
-    console.log('typeof(statusCode) = ', typeof(statusCode));
+    //console.log('statusCode = ', statusCode);
+    //console.log('typeof(statusCode) = ', typeof(statusCode));
     
     switch(parseInt(statusCode)) {
         case 0:
@@ -379,7 +353,6 @@ function flightStatus(statusCode){
 }
 
 function refreshAirlinesStatus(){ 
-    console.log('hello');
     let tableRow='';               
     flightSuretyApp.methods.getAirlines().call().then( (res,err) => {
         if(!err){
@@ -388,7 +361,6 @@ function refreshAirlinesStatus(){
             for (let entry of airlines) // loop on airlines
                 promiseVec.push(flightSuretyApp.methods.getAirlineStatus(entry).call());
             Promise.all(promiseVec).then(status => {
-                console.log('status = ',status);
                 if(status.length !== airlines.length)
                     error('status.length !== airlines.length');
                 // re-initialize list of funded airlines
@@ -417,11 +389,9 @@ function refreshAirlinesStatus(){
 function refreshInsuranceFlightsMenu() {
     let flightsMenu = '';
     const selectedAirline = htm.insurance.airlinesMenu.value; // address of selected airline        
-    console.log('selectedAirline = ', selectedAirline);
-
+    
     if(airlinesIDs.has(selectedAirline)){
         const selectedIata = airlinesIDs.get(selectedAirline); // IATA of selected airline
-        console.log('selectedIata = ', selectedIata);
         // build menu items and create list of eligible flights
         for(let entry of flightsDB){ // loop on all flights in DB
             if( selectedIata.localeCompare(entry.airline.iata) === 0 ){ // match
@@ -431,7 +401,6 @@ function refreshInsuranceFlightsMenu() {
                 const timestamp = (10000*parseInt(entry.departure.scheduled.substring(0,4))
                     +100*parseInt(entry.departure.scheduled.substring(5,7))
                     +parseInt(entry.departure.scheduled.substring(8,10))).toString();
-                console.log('timestamp = ', timestamp);
                 flightsMenu += '<option value = "' + flightCode + '*' + timestamp + '">'+ flightCode + '   ' +
                     entry.departure.iata + '(' + departureTime + ') -> ' + entry.arrival.iata + '(' + arrivalTime + ')' + '</option>';
             }
@@ -453,25 +422,20 @@ function refreshInsuranceAirlinesMenu() {
             airlinesMenu += '<option value="' + entry + '">' + entry + '</option>';
         }            
     }
-    console.log('airlinesMenu = ', airlinesMenu);
     htm.insurance.airlinesMenu.innerHTML = airlinesMenu;
     refreshInsuranceFlightsMenu();
 }
 
 function refreshPurchasedInsurances(){ 
-    console.log('hello - refreshPurchasedInsurances');
     let purchaseMenu='';       
     flightSuretyApp.methods.getActiveInsuranceKeys().call({from:currentAccount}).then( (res,err) => {
         if(!err){
             const keys = res.activeInsuranceKeys;
-            console.log('keys = ',keys);
             const nKeys = res.nActiveInsurances;
-            console.log('nKeys = ',nKeys);
             let promiseVec = [];
             for (let i=0; i<nKeys; i++) // loop on keys
                 promiseVec.push(flightSuretyApp.methods.getInsuranceData(keys[i]).call());
             Promise.all(promiseVec).then(status => {
-                console.log('status = ',status);
                 if(status.length !== keys.length)
                     error('status.length !== keys.length');
                 for (let i=0; i < status.length; i++){
@@ -492,13 +456,8 @@ function refreshPurchasedInsurances(){
 
 function displayUserCredit() {
     flightSuretyApp.methods.getCredit().call({from:currentAccount}).then( (res,err) => {
-        console.log('res = ', res);
         const amountETH = web3.utils.fromWei(res,'ether');
-        //const amountETH = res;
-        console.log('amountETH = ', amountETH);
-        console.log('typeof(amountETH) = ', typeof(amountETH));
-        htm.insurance.creditAmount.value = amountETH;
-        console.log('htm.insurance.creditAmount.value: ', htm.insurance.creditAmount.value);
+        htm.insurance.creditAmount.value = amountETH;        
     }).catch( err => {
         console.log(`Error when calling getCredit for user ${currentAccount}: `, err);
     });
@@ -511,7 +470,7 @@ async function serverGetJSON(dataName) {
     const response = await fetch(url, { method: 'GET' });
     if(response.ok){
         const data = await response.json();
-        console.log('GET - Success. Response:', data);
+        //console.log('GET - Success. Response:', data);
         return data;
     }else{
         const message = `An error has occured in serverGetJSON(${dataName}): ${response.status}`;
@@ -532,7 +491,7 @@ async function serverPostJSON(routeName, data) {
     const response = await fetch(url, fetchOptions);
     if(response.ok){
         const tmp = await response.json();
-        console.log('POST - Success. Response:', response);
+        //console.log('POST - Success. Response:', response);
         return;
     }else{
         const message = `An error has occured in serverPostJSON(${routeName}, ${JSON.stringify(data)}): ${response.status}`;
@@ -549,7 +508,7 @@ async function serverGetMapJSON(dataName) {
     if(response.ok){
         const data = await response.json();
         const dataMap = new Map(data);
-        console.log('GET - Success');
+        //console.log('GET - Success');
         return dataMap;
     }else{
         const message = `An error has occured in serverGetMapJSON(${dataName}): ${response.status}`;

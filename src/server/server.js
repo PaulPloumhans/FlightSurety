@@ -7,10 +7,10 @@ import 'regenerator-runtime/runtime';
 
 const fs = require('fs');
 const cors = require('cors');
-const bodyParser = require('body-parser');
+//const bodyParser = require('body-parser');
 
 let app; // express server to export
-const N_ORACLES = 10; // number of oracles
+const N_ORACLES = 30; // number of oracles
 const IDX_FIRST_ORACLE = 10; // index of first oracle in set of accounts
 
 const initialize = async () => {
@@ -87,14 +87,14 @@ const initialize = async () => {
         const indexes = oracleIndexes.get(accounts[idx]);
         for(let j=0; j < indexes.length; j++){
           if (indexes[j] === index){ // one of the indices of oracle i is relevant
-            //const statusCode = (1+Math.floor(Math.random() * 5))*10; // random multiple of 10 in [10;50]
-            const statusCode = 20; // random multiple of 10 in [10;50]
+            const statusCode = (Math.floor(Math.random() * 6))*10; // random multiple of 10 in [10;50]
+            //const statusCode = 20; // random multiple of 10 in [10;50]
             try{
               await flightSuretyApp.methods.submitOracleResponse(index, rv.airline, rv.flight, rv.timestamp, statusCode).send({ from: accounts[idx], gas: 1000000});
             console.log(`Oracle ${i+1} submits index/statusCode = ${index}/${statusCode}`);
             }
             catch(err){
-              console.log(`Error calling submitOracleResponse for Oracle ${i+1} submitting index/statusCode = ${index}/${statusCode}`);
+              //console.log(`Error calling submitOracleResponse for Oracle ${i+1} submitting index/statusCode = ${index}/${statusCode}`);
               //console.log('error: ', err);
             }
           } 
@@ -102,14 +102,6 @@ const initialize = async () => {
       }
     }    
   });
-
-
-  // ACT
-  /* for(let a=1; a<TEST_ORACLES_COUNT; a++) {      
-    await config.flightSuretyApp.registerOracle({ from: accounts[a], value: fee });
-    let result = await config.flightSuretyApp.getMyIndexes.call({from: accounts[a]});
-    console.log(`Oracle Registered: ${result[0]}, ${result[1]}, ${result[2]}`);
-  } */
 
 
   // ***********************************************************************************
@@ -161,9 +153,6 @@ const initialize = async () => {
   app.post('/assign', (req, res) => {
       let assignInfo = req.body;
       airlinesIDs.set(assignInfo.address, assignInfo.iata);
-      // console.log('req = ', req);
-      // console.log('req.body = ', req.body);
-      // console.log('airlinesIDs = ', airlinesIDs);
       res.send(JSON.stringify(assignInfo));
   });
   

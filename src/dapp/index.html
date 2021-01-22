@@ -64,7 +64,7 @@
                         <form>
                             <div class="row top-20 bottom-20">
                                 <div class="col-3">
-                                    Assign airline name to current address (optional)
+                                    Assign airline name to current address
                                 </div>
                                 <div class="col-4">
                                     <select class="form-select" id="airlinesNamesMenu"></select>                            
@@ -164,8 +164,11 @@
                             </div>
                             <div class="row top-20 bottom-20">
                                 <div class="col-3">
-                                    <button type="button" class="btn btn-primary" id="insuranceCheckFlightStatus">Check flight status</button>
-                                </div>
+                                    <button type="button" class="btn btn-primary" id="insuranceCheckFlightStatus">
+                                        Check flight status
+                                        <span class="spinner-border spinner-border-sm" id="spinnerStatus" role="status" aria-hidden="true"></span>                                         
+                                    </button> 
+                                </div>                                
                                 <div class="col-6">
                                     <input type="text" class="form-control" id="flightStatus" readonly></input>                                     
                                 </div>
