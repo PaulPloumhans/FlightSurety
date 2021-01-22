@@ -1,13 +1,10 @@
 import FlightSuretyApp from '../../build/contracts/FlightSuretyApp.json';
 import FlightSuretyData from '../../build/contracts/FlightSuretyData.json';
 import Config from './config.json';
-//import AirDB from './airDB.json';
 import Web3 from 'web3';
-import DOM from './dom';
-//import Contract from './contract';
 import './flightsurety.css';
 
-// Dapp overall status info
+// Dapp html page IDs
 var htm = {
     currentUser : document.getElementById('currentUser'),
     airlines : {
@@ -282,8 +279,7 @@ const initialize = async(network) => {
             console.log(`Error when calling pay for user ${currentAccount}: `, err);
         });
     }    
-    console.log('-> ', htm.insurance.spinnerStatus.style);
-
+    
     // ***********************************************************************************
     // ************                          ADMIN                            ************
     // ***********************************************************************************
